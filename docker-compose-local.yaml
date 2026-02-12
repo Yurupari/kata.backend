@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: "postgres:18-alpine"
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=kata
+      - POSTGRES_USER=katauser
+      - POSTGRES_PASSWORD=katapassword
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  kata-backend:
+    build:
+      context: .
+      dockerfile: ./src/main/docker/Dockerfile
+    container_name: kata-backend
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_TIME_IN_MINUTES=2
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=kata
+      - POSTGRES_USER=katauser
+      - POSTGRES_PASSWORD=katapassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    volumes:
+      - ./logs/:/logs
+    ports:
+      - "8080:8080"
+      - "8085:8085"
+    depends_on:
+      - postgres
+      - redis

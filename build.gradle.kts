@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "4.0.2"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("jacoco")
 }
 
 group = "com.haiilo"
@@ -38,6 +39,27 @@ dependencies {
 	testRuntimeOnly("com.h2database:h2")
 }
 
+jacoco {
+	toolVersion = "0.8.12"
+}
+
 tasks.withType<Test> {
 	useJUnitPlatform()
+	testLogging {
+		events("passed", "skipped", "failed")
+	}
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.withType<JacocoReport> {
+	dependsOn(tasks.test)
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/html"))
+	}
+}
+
+tasks.bootJar {
+	archiveFileName.set("${project.name}.jar")
 }
