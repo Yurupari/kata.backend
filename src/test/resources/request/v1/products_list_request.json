@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Apple",
+    "unit_price": 0.50
+  },
+  {
+    "name": "Banana",
+    "unit_price": 0.40
+  },
+  {
+    "name": "Orange",
+    "unit_price": 0.60
+  }
+]

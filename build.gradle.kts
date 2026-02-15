@@ -25,16 +25,23 @@ repositories {
 	mavenCentral()
 }
 
+val springdocVersion = "2.5.0"
+val mapstructVersion = "1.6.3"
+
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
+	implementation("org.mapstruct:mapstruct:${mapstructVersion}")
+	annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-redis-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testRuntimeOnly("com.h2database:h2")
 }
