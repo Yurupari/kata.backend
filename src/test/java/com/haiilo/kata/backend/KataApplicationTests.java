@@ -136,8 +136,14 @@ class KataApplicationTests {
 	}
 
 	@Test
+	void getCurrentCart_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/cart/current"))
+				.andExpect(status().isOk());
+	}
+
+	@Test
 	void getCart_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/cart"))
+		mockMvc.perform(get("/api/kata/v1/cart/1"))
 				.andExpect(status().isOk());
 	}
 
