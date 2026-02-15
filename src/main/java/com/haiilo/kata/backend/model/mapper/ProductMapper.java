@@ -5,6 +5,7 @@ import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.model.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(
         componentModel = "spring",
@@ -16,4 +17,8 @@ public interface ProductMapper {
 
     @Mapping(target = "offers", ignore = true)
     Product toEntity(ProductDto dto);
+
+    @Mapping(target = "offers", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDto(ProductDto dto, @MappingTarget Product entity);
 }

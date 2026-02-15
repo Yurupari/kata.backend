@@ -5,6 +5,7 @@ import com.haiilo.kata.backend.model.dto.CartItemDto;
 import com.haiilo.kata.backend.model.entity.CartItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(
         componentModel = "spring",
@@ -19,4 +20,10 @@ public interface CartItemMapper {
     @Mapping(target = "cart.id", source = "cartId")
     @Mapping(target = "product.id", source = "productId")
     CartItem toEntity(CartItemDto dto);
+
+    @Mapping(target = "cart.id", ignore = true)
+    @Mapping(target = "product.id", ignore = true)
+    @Mapping(target = "product.name", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDto(CartItemDto dto, @MappingTarget CartItem entity);
 }
