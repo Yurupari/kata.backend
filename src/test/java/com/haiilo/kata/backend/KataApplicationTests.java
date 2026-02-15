@@ -188,7 +188,7 @@ class KataApplicationTests {
 
 	@Test
 	void getReceipt_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/receipt?cartId=1"))
+		mockMvc.perform(get("/api/kata/v1/receipt?id=1"))
 				.andExpect(status().isOk());
 	}
 }
