@@ -1,5 +1,6 @@
 package com.haiilo.kata.backend.config;
 
+import com.haiilo.kata.backend.model.mapper.DateMapper;
 import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -7,7 +8,8 @@ import org.mapstruct.ReportingPolicy;
 
 @MapperConfig(
         componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = DateMapper.class
 )
 public interface CentralMapperConfig {
     @Mapping(target = "createdAt", ignore = true)

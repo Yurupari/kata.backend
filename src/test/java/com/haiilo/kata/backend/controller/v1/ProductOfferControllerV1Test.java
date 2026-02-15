@@ -2,7 +2,7 @@ package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.service.ProductOfferService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,10 +26,13 @@ class ProductOfferControllerV1Test {
     @MockitoBean
     private ProductOfferService productOfferService;
 
+    @Autowired
+    private JsonTestUtils jsonTestUtils;
+
     @Test
     void addProductOffer_Success() throws IOException {
-        var productOfferDto = UtilsTest.loadObject("model/request/v1/new_product_offer_request.json", ProductOfferDto.class);
-        var newProductOfferDto = UtilsTest.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductOfferDto.class);
+        var newProductOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
 
         when(productOfferService.addProductOffer(any())).thenReturn(newProductOfferDto);
 
@@ -43,7 +46,7 @@ class ProductOfferControllerV1Test {
 
     @Test
     void updateProductOffer() throws IOException {
-        var productOfferDto = UtilsTest.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
 
         var response = productOfferControllerV1.updateProductOffer(productOfferDto);
 

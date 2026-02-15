@@ -5,7 +5,7 @@ import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.entity.Receipt;
 import com.haiilo.kata.backend.repository.ReceiptRepository;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,9 +28,12 @@ class ReceiptServiceImplTest {
     @MockitoBean
     private ReceiptRepository receiptRepository;
 
+    @Autowired
+    private JsonTestUtils jsonTestUtils;
+
     @Test
     void getReceipt_Success() throws IOException {
-        var receipt = UtilsTest.loadObject("model/domain/v1/receipt.json", Receipt.class);
+        var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 
         when(receiptRepository.findById(any())).thenReturn(Optional.of(receipt));
 
@@ -41,7 +44,7 @@ class ReceiptServiceImplTest {
 
     @Test
     void getReceiptOnlyId_Success() throws IOException {
-        var receipt = UtilsTest.loadObject("model/domain/v1/receipt.json", Receipt.class);
+        var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 
         when(receiptRepository.findById(any())).thenReturn(Optional.of(receipt));
 
@@ -52,7 +55,7 @@ class ReceiptServiceImplTest {
 
     @Test
     void getReceiptOnlyCartId_Success() throws IOException {
-        var receipt = UtilsTest.loadObject("model/domain/v1/receipt.json", Receipt.class);
+        var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 
         when(receiptRepository.findById(any())).thenReturn(Optional.of(receipt));
 
@@ -75,8 +78,8 @@ class ReceiptServiceImplTest {
 
     @Test
     void addReceipt_Success() throws IOException {
-        var receiptDto = UtilsTest.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
-        var receipt = UtilsTest.loadObject("model/domain/v1/receipt.json", Receipt.class);
+        var receiptDto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+        var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 
         when(receiptRepository.save(any())).thenReturn(receipt);
 

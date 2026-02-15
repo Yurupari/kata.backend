@@ -8,6 +8,7 @@ public record CartDto(
         Long id,
         CartStatus cartStatus,
         List<CartItemDto> items,
-        Double total
+        Double total,
+        String currency
 ) {
 }

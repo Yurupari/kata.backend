@@ -4,7 +4,7 @@
   "discount": 0.40,
   "currency": "EUR",
   "discountType": "FIXED_AMOUNT",
-  "from": "22-02-2025",
+  "from": "22-02-2026T15:30:00.000Z",
   "until": "29-02-2025",
   "products": [
     {

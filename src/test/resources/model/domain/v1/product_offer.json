@@ -3,8 +3,8 @@
   "product": {
     "id": 1,
     "name": "Apple",
-    "createdAt": "14-02-2026",
-    "updatedAt": "14-02-2026"
+    "createdAt": "14-02-2026T15:30:00.000Z",
+    "updatedAt": "14-02-2026T15:30:00.000Z"
   },
   "offer": {
     "id": 1,
@@ -12,11 +12,11 @@
     "discount": 0.50,
     "currency": "EUR",
     "discountType": "FIXED_AMOUNT",
-    "createdAt": "14-02-2026",
-    "updatedAt": "14-02-2026"
+    "createdAt": "14-02-2026T15:30:00.000Z",
+    "updatedAt": "14-02-2026T15:30:00.000Z"
   },
   "quantity": 1,
   "status": "ACTIVE",
-  "createdAt": "14-02-2026",
-  "updatedAt": "14-02-2026"
+  "createdAt": "14-02-2026T15:30:00.000Z",
+  "updatedAt": "14-02-2026T15:30:00.000Z"
 }

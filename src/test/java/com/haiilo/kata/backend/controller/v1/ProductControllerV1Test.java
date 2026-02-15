@@ -2,7 +2,7 @@ package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.service.ProductService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,9 +27,12 @@ class ProductControllerV1Test {
     @MockitoBean
     private ProductService productService;
 
+    @Autowired
+    private JsonTestUtils jsonTestUtils;
+
     @Test
     void getProducts_Success() throws IOException {
-        var productDto = UtilsTest.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var productDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
         when(productService.getProducts()).thenReturn(List.of(productDto));
 
         var response = productControllerV1.getProducts();
@@ -43,7 +46,7 @@ class ProductControllerV1Test {
 
     @Test
     void getProduct_Success() throws IOException {
-        var productDto = UtilsTest.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var productDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
         when(productService.getProduct(any())).thenReturn(productDto);
 
         var response = productControllerV1.getProduct(1L);
@@ -56,8 +59,8 @@ class ProductControllerV1Test {
 
     @Test
     void addProduct_Success() throws IOException {
-        var productDto = UtilsTest.loadObject("model/request/v1/new_product_request.json", ProductDto.class);
-        var newProductDto = UtilsTest.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var productDto = jsonTestUtils.loadObject("model/request/v1/new_product_request.json", ProductDto.class);
+        var newProductDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
 
         when(productService.addProduct(any())).thenReturn(newProductDto);
 
@@ -71,7 +74,7 @@ class ProductControllerV1Test {
 
     @Test
     void updateProduct_Success() throws IOException {
-        var productDto = UtilsTest.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var productDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
 
         var response = productControllerV1.updateProduct(productDto);
 

@@ -1,6 +1,6 @@
 package com.haiilo.kata.backend;
 
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,14 @@ class KataApplicationTests {
 	private MockMvc mockMvc;
 
 	@Autowired
+	private JsonTestUtils jsonTestUtils;
+
+	@Autowired
 	private ObjectMapper objectMapper;
 
 	@BeforeEach
 	void setup() throws Exception {
-		var productsJson = UtilsTest.loadRequest("model/request/v1/products_list_request.json");
+		var productsJson = jsonTestUtils.loadRequest("model/request/v1/products_list_request.json");
 		var products = objectMapper.readTree(productsJson);
 
 		if (products.isArray()) {
@@ -47,7 +50,7 @@ class KataApplicationTests {
 
 	@Test
 	void addProduct_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/new_product_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/new_product_request.json");
 
 		mockMvc.perform(post("/api/kata/v1/product")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +61,7 @@ class KataApplicationTests {
 
 	@Test
 	void updateProduct_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/update_product_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/update_product_request.json");
 
 		mockMvc.perform(put("/api/kata/v1/product")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +84,7 @@ class KataApplicationTests {
 
 	@Test
 	void addOffer_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/new_offer_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/new_offer_request.json");
 
 		mockMvc.perform(post("/api/kata/v1/offer")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -92,7 +95,7 @@ class KataApplicationTests {
 
 	@Test
 	void updateOffer_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/update_offer_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/update_offer_request.json");
 
 		mockMvc.perform(put("/api/kata/v1/offer")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +112,7 @@ class KataApplicationTests {
 
 	@Test
 	void updateCart_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/update_cart_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/update_cart_request.json");
 
 		mockMvc.perform(put("/api/kata/v1/cart")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +135,7 @@ class KataApplicationTests {
 
 	@Test
 	void addCartItem_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/new_cart_item_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/new_cart_item_request.json");
 
 		mockMvc.perform(post("/api/kata/v1/cart/item")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +146,7 @@ class KataApplicationTests {
 
 	@Test
 	void updateCartItem_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/update_cart_item_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/update_cart_item_request.json");
 
 		mockMvc.perform(put("/api/kata/v1/cart/item")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +157,7 @@ class KataApplicationTests {
 
 	@Test
 	void addProductOffer_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/new_product_offer_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/new_product_offer_request.json");
 
 		mockMvc.perform(post("/api/kata/v1/product/offer")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -165,7 +168,7 @@ class KataApplicationTests {
 
 	@Test
 	void updateProductOffer_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/dto/v1/product_offer_dto.json");
+		var request = jsonTestUtils.loadRequest("model/dto/v1/product_offer_dto.json");
 
 		mockMvc.perform(put("/api/kata/v1/product/offer")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -176,7 +179,7 @@ class KataApplicationTests {
 
 	@Test
 	void executeCheckout_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/checkout_request.json");
+		var request = jsonTestUtils.loadRequest("model/request/v1/checkout_request.json");
 
 		mockMvc.perform(post("/api/kata/v1/checkout")
 						.contentType(MediaType.APPLICATION_JSON)

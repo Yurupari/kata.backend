@@ -5,13 +5,11 @@ import com.haiilo.kata.backend.model.dto.OfferDto;
 import com.haiilo.kata.backend.model.entity.Offer;
 import com.haiilo.kata.backend.repository.OfferRepository;
 import com.haiilo.kata.backend.service.ProductOfferService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -37,11 +35,11 @@ class OfferServiceImplTest {
     private ProductOfferService productOfferService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonTestUtils jsonTestUtils;
 
     @Test
     void getOffer_Success() throws IOException {
-        var offer = UtilsTest.loadObject("model/domain/v1/offer.json", Offer.class);
+        var offer = jsonTestUtils.loadObject("model/domain/v1/offer.json", Offer.class);
 
         when(offerRepository.findById(any())).thenReturn(Optional.of(offer));
 
@@ -59,8 +57,8 @@ class OfferServiceImplTest {
 
     @Test
     void addOffer_Success() throws IOException {
-        var offerDto = UtilsTest.loadObject("model/request/v1/new_offer_request.json", OfferDto.class);
-        var offer = UtilsTest.loadObject("model/domain/v1/offer.json", Offer.class);
+        var offerDto = jsonTestUtils.loadObject("model/request/v1/new_offer_request.json", OfferDto.class);
+        var offer = jsonTestUtils.loadObject("model/domain/v1/offer.json", Offer.class);
 
         when(offerRepository.save(any())).thenReturn(offer);
 
@@ -71,12 +69,14 @@ class OfferServiceImplTest {
 
     @Test
     void updateOffer_Success() throws IOException {
-        var offerDto = UtilsTest.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
+        var offerDto = jsonTestUtils.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
+        var offer = jsonTestUtils.loadObject("model/domain/v1/offer.json", Offer.class);
 
+        when(offerRepository.findById(any())).thenReturn(Optional.of(offer));
         when(offerRepository.save(any())).thenReturn(new Offer());
-
         assertDoesNotThrow(() -> offerService.updateOffer(offerDto));
 
+        verify(offerRepository, times(1)).findById(any(Long.class));
         verify(offerRepository, times(1)).save(any(Offer.class));
     }
 }

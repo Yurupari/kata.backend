@@ -2,7 +2,7 @@ package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.service.ReceiptService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,9 +24,12 @@ class ReceiptControllerV1Test {
     @MockitoBean
     private ReceiptService receiptService;
 
+    @Autowired
+    private JsonTestUtils jsonTestUtils;
+
     @Test
     void getReceipt_Success() throws IOException {
-        var receiptDto = UtilsTest.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+        var receiptDto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
 
         when(receiptService.getReceipt(any(), any())).thenReturn(receiptDto);
 

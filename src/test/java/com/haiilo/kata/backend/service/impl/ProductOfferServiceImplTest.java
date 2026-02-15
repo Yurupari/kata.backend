@@ -5,16 +5,13 @@ import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.entity.ProductOffer;
 import com.haiilo.kata.backend.repository.ProductOfferRepository;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -35,11 +32,11 @@ class ProductOfferServiceImplTest {
     private ProductOfferRepository productOfferRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonTestUtils jsonTestUtils;
 
     @Test
     void getProductOffers_Success() throws IOException {
-        var productOffers = UtilsTest.loadListObjects("model/domain/v1/product_offers.json", ProductOffer.class);
+        var productOffers = jsonTestUtils.loadListObjects("model/domain/v1/product_offers.json", ProductOffer.class);
 
         when(productOfferRepository.findByProductIdOrOfferId(any(), any())).thenReturn(productOffers);
 
@@ -50,7 +47,7 @@ class ProductOfferServiceImplTest {
 
     @Test
     void getProductOffers_OnlyByProductId_Success() throws IOException {
-        var productOffers = UtilsTest.loadListObjects("model/domain/v1/product_offers.json", ProductOffer.class);
+        var productOffers = jsonTestUtils.loadListObjects("model/domain/v1/product_offers.json", ProductOffer.class);
 
         when(productOfferRepository.findByProductIdOrOfferId(any(), any())).thenReturn(productOffers);
 
@@ -61,7 +58,7 @@ class ProductOfferServiceImplTest {
 
     @Test
     void getProductOffers_OnlyByOfferId_Success() throws IOException {
-        var productOffers = UtilsTest.loadListObjects("model/domain/v1/product_offers.json", ProductOffer.class);
+        var productOffers = jsonTestUtils.loadListObjects("model/domain/v1/product_offers.json", ProductOffer.class);
 
         when(productOfferRepository.findByProductIdOrOfferId(any(), any())).thenReturn(productOffers);
 
@@ -78,7 +75,7 @@ class ProductOfferServiceImplTest {
 
     @Test
     void getProductOffer_Success() throws IOException {
-        var productOffer = UtilsTest.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
+        var productOffer = jsonTestUtils.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
 
         when(productOfferRepository.findById(any())).thenReturn(Optional.of(productOffer));
 
@@ -97,8 +94,8 @@ class ProductOfferServiceImplTest {
 
     @Test
     void addProductOffer_Success() throws IOException {
-        var productOfferDto = UtilsTest.loadObject("model/request/v1/new_product_offer_request.json", ProductOfferDto.class);
-        var productOffer = UtilsTest.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductOfferDto.class);
+        var productOffer = jsonTestUtils.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
 
         when(productOfferRepository.save(any())).thenReturn(productOffer);
 
@@ -109,12 +106,15 @@ class ProductOfferServiceImplTest {
 
     @Test
     void updateProductOffer_Success() throws IOException {
-        var productOfferDto = UtilsTest.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var productOffer = jsonTestUtils.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
 
+        when(productOfferRepository.findById(any())).thenReturn(Optional.of(productOffer));
         when(productOfferRepository.save(any())).thenReturn(new ProductOffer());
 
         assertDoesNotThrow(() -> productOfferService.updateProductOffer(productOfferDto));
 
+        verify(productOfferRepository, times(1)).findById(any(Long.class));
         verify(productOfferRepository, times(1)).save(any(ProductOffer.class));
     }
 }

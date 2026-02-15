@@ -3,7 +3,7 @@ package com.haiilo.kata.backend.controller.v1;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.http.CheckoutRequest;
 import com.haiilo.kata.backend.service.CheckoutService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,9 +25,12 @@ class CheckoutControllerV1Test {
     @MockitoBean
     private CheckoutService checkoutService;
 
+    @Autowired
+    private JsonTestUtils jsonTestUtils;
+
     @Test
     void executeCheckout_Success() throws IOException {
-        var receiptDto = UtilsTest.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+        var receiptDto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
 
         when(checkoutService.executeCheckout(any())).thenReturn(receiptDto);
 

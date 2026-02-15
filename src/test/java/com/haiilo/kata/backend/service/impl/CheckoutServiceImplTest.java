@@ -4,19 +4,17 @@ import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.OfferDto;
 import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
-import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.http.CheckoutRequest;
 import com.haiilo.kata.backend.service.CartService;
 import com.haiilo.kata.backend.service.OfferService;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import com.haiilo.kata.backend.service.ProductService;
 import com.haiilo.kata.backend.service.ReceiptService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,15 +44,15 @@ class CheckoutServiceImplTest {
     private ReceiptService receiptService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonTestUtils jsonTestUtils;
 
     @Test
     void executeCheckout_Success() throws IOException {
         var checkoutRequest = new CheckoutRequest(1L);
-        var cartDto = UtilsTest.loadObject("model/dto/v1/cart_dto.json", CartDto.class);
-        var apple_dto = UtilsTest.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
-        var product_offer_dto = List.of(UtilsTest.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class));
-        var offer_dto = UtilsTest.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
+        var cartDto = jsonTestUtils.loadObject("model/dto/v1/cart_dto.json", CartDto.class);
+        var apple_dto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var product_offer_dto = List.of(jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class));
+        var offer_dto = jsonTestUtils.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
 
         when(cartService.getCurrentCart()).thenReturn(cartDto);
         when(productService.getProduct(1L)).thenReturn(apple_dto);

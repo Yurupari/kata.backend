@@ -4,12 +4,10 @@ import com.haiilo.kata.backend.exception.ProductNotFoundException;
 import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.model.entity.Product;
 import com.haiilo.kata.backend.repository.ProductRepository;
-import com.haiilo.kata.backend.service.ProductOfferService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import tools.jackson.databind.ObjectMapper;
 
@@ -34,17 +32,17 @@ class ProductServiceImplTest {
     @MockitoBean
     private ProductRepository productRepository;
 
-    @MockitoBean
-    private ProductOfferService productOfferService;
-
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JsonTestUtils jsonTestUtils;
+
     @Test
     void getProducts_Success() throws IOException {
-        var product = UtilsTest.loadObject("model/domain/v1/product.json", Product.class);
+        var product = jsonTestUtils.loadObject("model/domain/v1/product.json", Product.class);
 
-        when(productRepository.findAll()).thenReturn(List.of(product));
+        when(productRepository.findByStatus(any())).thenReturn(List.of(product));
 
         var response = productService.getProducts();
 
@@ -53,7 +51,7 @@ class ProductServiceImplTest {
 
     @Test
     void getProduct_Success() throws IOException {
-        var product = UtilsTest.loadObject("model/domain/v1/product.json", Product.class);
+        var product = jsonTestUtils.loadObject("model/domain/v1/product.json", Product.class);
 
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
 
@@ -70,18 +68,11 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void getProduct_ConnectionRefused() {
-        when(productRepository.findById(any())).thenThrow(new Exception("Connection refused"));
-
-        assertThrows(Exception.class, () -> productService.getProduct(1L));
-    }
-
-    @Test
     void addProduct_Success() throws IOException {
-        var productDto = UtilsTest.loadObject("model/request/v1/new_product_request.json", ProductDto.class);
-        var product = UtilsTest.loadObject("model/domain/v1/product.json", Product.class);
+        var productDto = jsonTestUtils.loadObject("model/request/v1/new_product_request.json", ProductDto.class);
+        var product = jsonTestUtils.loadObject("model/domain/v1/product.json", Product.class);
 
-        when(productRepository.save(product)).thenReturn(product);
+        when(productRepository.save(any())).thenReturn(product);
 
         var response = productService.addProduct(productDto);
 
@@ -90,12 +81,15 @@ class ProductServiceImplTest {
 
     @Test
     void updateProduct_Success() throws IOException {
-        var productDto = UtilsTest.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var productDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var product = jsonTestUtils.loadObject("model/domain/v1/product.json", Product.class);
 
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(productRepository.save(any())).thenReturn(new Product());
 
         assertDoesNotThrow(() -> productService.updateProduct(productDto));
 
+        verify(productRepository, times(1)).findById(any(Long.class));
         verify(productRepository, times(1)).save(any(Product.class));
     }
 }

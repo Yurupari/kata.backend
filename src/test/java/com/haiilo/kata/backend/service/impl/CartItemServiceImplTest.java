@@ -4,16 +4,13 @@ import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
 import com.haiilo.kata.backend.model.entity.CartItem;
 import com.haiilo.kata.backend.repository.CartItemRepository;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -34,11 +31,11 @@ class CartItemServiceImplTest {
     private CartItemRepository cartItemRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonTestUtils jsonTestUtils;
 
     @Test
     void getCartItems_Success() throws IOException {
-        var cartItems = UtilsTest.loadListObjects("model/domain/v1/cart_items.json", CartItem.class);
+        var cartItems = jsonTestUtils.loadListObjects("model/domain/v1/cart_items.json", CartItem.class);
 
         when(cartItemRepository.findByCartId(any())).thenReturn(cartItems);
 
@@ -49,7 +46,7 @@ class CartItemServiceImplTest {
 
     @Test
     void getCartItem_Success() throws IOException {
-        var cartItem = UtilsTest.loadObject("model/domain/v1/cart_item.json", CartItem.class);
+        var cartItem = jsonTestUtils.loadObject("model/domain/v1/cart_item.json", CartItem.class);
 
         when(cartItemRepository.findById(any())).thenReturn(Optional.of(cartItem));
 
@@ -67,8 +64,8 @@ class CartItemServiceImplTest {
 
     @Test
     void addCartItem_Success() throws IOException {
-        var cartItemDto = UtilsTest.loadObject("model/request/v1/new_cart_item_request.json", CartItemDto.class);
-        var cartItem = UtilsTest.loadObject("model/domain/v1/cart_item.json", CartItem.class);
+        var cartItemDto = jsonTestUtils.loadObject("model/request/v1/new_cart_item_request.json", CartItemDto.class);
+        var cartItem = jsonTestUtils.loadObject("model/domain/v1/cart_item.json", CartItem.class);
 
         when(cartItemRepository.save(any())).thenReturn(cartItem);
 
@@ -79,12 +76,15 @@ class CartItemServiceImplTest {
 
     @Test
     void updateCartItem_Success() throws IOException {
-        var cartItemDto = UtilsTest.loadObject("model/dto/v1/cart_item_dto.json", CartItemDto.class);
+        var cartItemDto = jsonTestUtils.loadObject("model/dto/v1/cart_item_dto.json", CartItemDto.class);
+        var cartItem = jsonTestUtils.loadObject("model/domain/v1/cart_item.json", CartItem.class);
 
+        when(cartItemRepository.findById(any())).thenReturn(Optional.of(cartItem));
         when(cartItemRepository.save(any())).thenReturn(new CartItem());
 
         assertDoesNotThrow(() -> cartItemService.updateCartItem(cartItemDto));
 
+        verify(cartItemRepository, times(1)).findById(any(Long.class));
         verify(cartItemRepository, times(1)).save(any(CartItem.class));
     }
 }

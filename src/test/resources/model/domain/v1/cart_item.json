@@ -7,11 +7,11 @@
     "unitPrice": 0.45,
     "currency": "EUR",
     "status": "ACTIVE",
-    "createdAt": "14-02-2026",
-    "updatedAt": "14-02-2026"
+    "createdAt": "14-02-2026T15:30:00.000Z",
+    "updatedAt": "14-02-2026T15:30:00.000Z"
   },
   "quantity": 2,
   "status": "ACTIVE",
-  "createdAt": "14-02-2026",
-  "updatedAt": "14-02-2026"
+  "createdAt": "14-02-2026T15:30:00.000Z",
+  "updatedAt": "14-02-2026T15:30:00.000Z"
 }

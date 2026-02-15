@@ -2,7 +2,7 @@ package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.CartItemDto;
 import com.haiilo.kata.backend.service.CartItemService;
-import com.haiilo.kata.backend.utils.UtilsTest;
+import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,10 +26,13 @@ class CartItemControllerV1Test {
     @MockitoBean
     private CartItemService cartItemService;
 
+    @Autowired
+    private JsonTestUtils jsonTestUtils;
+
     @Test
     void addCartItem() throws IOException {
-        var cartItemDto = UtilsTest.loadObject("model/request/v1/new_cart_item_request.json", CartItemDto.class);
-        var newCartItemDto = UtilsTest.loadObject("model/dto/v1/cart_item_dto.json", CartItemDto.class);
+        var cartItemDto = jsonTestUtils.loadObject("model/request/v1/new_cart_item_request.json", CartItemDto.class);
+        var newCartItemDto = jsonTestUtils.loadObject("model/dto/v1/cart_item_dto.json", CartItemDto.class);
 
         when(cartItemService.addCartItem(any())).thenReturn(newCartItemDto);
 
@@ -43,7 +46,7 @@ class CartItemControllerV1Test {
 
     @Test
     void updateCartItem() throws IOException {
-        var cartItemDto = UtilsTest.loadObject("model/dto/v1/cart_item_dto.json", CartItemDto.class);
+        var cartItemDto = jsonTestUtils.loadObject("model/dto/v1/cart_item_dto.json", CartItemDto.class);
 
         var response = cartItemControllerV1.updateCartItem(cartItemDto);
 
