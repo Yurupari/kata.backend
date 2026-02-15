@@ -9,4 +9,5 @@ public interface CartItemService {
     CartDto getCartItem(Long id);
     CartDto addCartItem(CartDto cartDto);
     void updateCartItem(CartDto cartDto);
+    void deleteCartItem(Long id);
 }
