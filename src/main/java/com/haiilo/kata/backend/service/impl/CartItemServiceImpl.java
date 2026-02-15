@@ -1,6 +1,6 @@
 package com.haiilo.kata.backend.service.impl;
 
-import com.haiilo.kata.backend.model.dto.CartDto;
+import com.haiilo.kata.backend.model.dto.CartItemDto;
 import com.haiilo.kata.backend.repository.CartItemRepository;
 import com.haiilo.kata.backend.service.CartItemService;
 import lombok.RequiredArgsConstructor;
@@ -15,27 +15,22 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public List<CartDto> getCartItems() {
+    public List<CartItemDto> getCartItems(Long cartId) {
         return List.of();
     }
 
     @Override
-    public CartDto getCartItem(Long id) {
+    public CartItemDto getCartItem(Long id) {
         return null;
     }
 
     @Override
-    public CartDto addCartItem(CartDto cartDto) {
+    public CartItemDto addCartItem(CartItemDto cartDto) {
         return null;
     }
 
     @Override
-    public void updateCartItem(CartDto cartDto) {
-
-    }
-
-    @Override
-    public void deleteCartItem(Long id) {
+    public void updateCartItem(CartItemDto cartDto) {
 
     }
 }

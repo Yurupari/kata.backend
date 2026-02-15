@@ -4,7 +4,7 @@ import com.haiilo.kata.backend.model.dto.CartDto;
 
 public interface CartService {
     CartDto getCurrentCart();
-    CartDto getProduct(Long id);
-    CartDto addProduct(CartDto cartDto);
-    void updateProduct(CartDto cartDto);
+    CartDto getCart(Long id);
+    CartDto addCart(CartDto cartDto);
+    void updateCart(CartDto cartDto);
 }

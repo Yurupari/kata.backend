@@ -1,5 +1,6 @@
 {
-  "status": "OPEN",
+  "id": 1,
+  "cart_status": "PROCESSED",
   "items": [
     {
       "productId": 1,

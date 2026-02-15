@@ -1,5 +1,6 @@
 package com.haiilo.kata.backend.model.entity;
 
+import com.haiilo.kata.backend.model.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,6 +40,8 @@ public class ProductOffer {
     private Offer offer;
 
     private Integer quantity;
+
+    private Status status;
 
     @CreationTimestamp
     @Column(updatable = false)

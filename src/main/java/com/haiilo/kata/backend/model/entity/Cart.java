@@ -33,7 +33,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private CartStatus status;
+    private CartStatus cartStatus;
 
     @CreationTimestamp
     @Column(updatable = false)

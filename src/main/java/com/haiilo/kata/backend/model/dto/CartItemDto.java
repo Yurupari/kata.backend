@@ -1,10 +1,13 @@
 package com.haiilo.kata.backend.model.dto;
 
+import com.haiilo.kata.backend.model.enums.Status;
+
 public record CartItemDto(
         Long id,
         Long cartId,
         Long productId,
         String productName,
-        Integer quantity
+        Integer quantity,
+        Status status
 ) {
 }

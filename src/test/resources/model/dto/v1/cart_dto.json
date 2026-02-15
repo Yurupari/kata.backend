@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "cartStatus": "OPEN",
+  "items": [
+    {
+      "id": 1,
+      "cartId": 1,
+      "productId": 1,
+      "productName": "Apple",
+      "quantity": 2
+    }
+  ],
+  "createdAt": "14-02-2026",
+  "updatedAt": "14-02-2026"
+}

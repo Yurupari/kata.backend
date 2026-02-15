@@ -15,27 +15,22 @@ public class ProductOfferServiceImpl implements ProductOfferService {
     private final ProductOfferRepository productOfferRepository;
 
     @Override
-    public List<ProductOfferDto> getProductOfferItems() {
+    public List<ProductOfferDto> getProductOffers(Long productId, Long offerId) {
         return List.of();
     }
 
     @Override
-    public ProductOfferDto getProductOfferItem(Long id) {
+    public ProductOfferDto getProductOffer(Long id) {
         return null;
     }
 
     @Override
-    public ProductOfferDto addProductOfferItem(ProductOfferDto productOfferDto) {
+    public ProductOfferDto addProductOffer(ProductOfferDto productOfferDto) {
         return null;
     }
 
     @Override
-    public void updateProductOfferItem(ProductOfferDto productOfferDto) {
-
-    }
-
-    @Override
-    public void deleteProductOfferItem(Long id) {
+    public void updateProductOffer(ProductOfferDto productOfferDto) {
 
     }
 }

@@ -1,0 +1,17 @@
+{
+  "id": 1,
+  "product": {
+    "id": 1,
+    "name": "Apple",
+    "description": "Fresh and juicy fruit",
+    "unitPrice": 0.45,
+    "currency": "EUR",
+    "status": "ACTIVE",
+    "createdAt": "14-02-2026",
+    "updatedAt": "14-02-2026"
+  },
+  "quantity": 2,
+  "status": "ACTIVE",
+  "createdAt": "14-02-2026",
+  "updatedAt": "14-02-2026"
+}

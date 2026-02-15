@@ -6,7 +6,7 @@ import java.util.List;
 
 public record CartDto(
         Long id,
-        CartStatus status,
+        CartStatus cartStatus,
         List<CartItemDto> items,
         Double total
 ) {

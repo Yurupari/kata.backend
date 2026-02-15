@@ -1,13 +1,12 @@
 package com.haiilo.kata.backend.service;
 
-import com.haiilo.kata.backend.model.dto.CartDto;
+import com.haiilo.kata.backend.model.dto.CartItemDto;
 
 import java.util.List;
 
 public interface CartItemService {
-    List<CartDto> getCartItems();
-    CartDto getCartItem(Long id);
-    CartDto addCartItem(CartDto cartDto);
-    void updateCartItem(CartDto cartDto);
-    void deleteCartItem(Long id);
+    List<CartItemDto> getCartItems(Long cartId);
+    CartItemDto getCartItem(Long id);
+    CartItemDto addCartItem(CartItemDto cartDto);
+    void updateCartItem(CartItemDto cartDto);
 }

@@ -2,7 +2,11 @@ package com.haiilo.kata.backend.service.impl;
 
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.http.CheckoutRequest;
+import com.haiilo.kata.backend.service.CartService;
 import com.haiilo.kata.backend.service.CheckoutService;
+import com.haiilo.kata.backend.service.OfferService;
+import com.haiilo.kata.backend.service.ProductOfferService;
+import com.haiilo.kata.backend.service.ProductService;
 import com.haiilo.kata.backend.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CheckoutServiceImpl implements CheckoutService {
 
+    private final CartService cartService;
+    private final ProductService productService;
+    private final ProductOfferService productOfferService;
+    private final OfferService offerService;
     private final ReceiptService receiptService;
 
     @Override

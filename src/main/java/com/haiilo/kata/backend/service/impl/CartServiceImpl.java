@@ -21,17 +21,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto getProduct(Long id) {
+    public CartDto getCart(Long id) {
         return null;
     }
 
     @Override
-    public CartDto addProduct(CartDto cartDto) {
+    public CartDto addCart(CartDto cartDto) {
         return null;
     }
 
     @Override
-    public void updateProduct(CartDto cartDto) {
+    public void updateCart(CartDto cartDto) {
 
     }
 }
