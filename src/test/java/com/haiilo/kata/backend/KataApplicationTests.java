@@ -102,25 +102,8 @@ class KataApplicationTests {
 	}
 
 	@Test
-	void getOffers_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/offer/offers"))
-				.andExpect(status().isOk());
-	}
-
-	@Test
 	void getOffer_Success() throws Exception {
 		mockMvc.perform(get("/api/kata/v1/offer/1"))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	void addCart_Success() throws Exception {
-		var request = UtilsTest.loadRequest("model/request/v1/new_cart_request.json");
-
-		mockMvc.perform(post("/api/kata/v1/cart")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(request)
-				)
 				.andExpect(status().isOk());
 	}
 
@@ -170,8 +153,24 @@ class KataApplicationTests {
 	}
 
 	@Test
-	void getCartItems_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/cart/items"))
+	void addProductOffer_Success() throws Exception {
+		var request = UtilsTest.loadRequest("model/request/v1/new_product_offer_request.json");
+
+		mockMvc.perform(post("/api/kata/v1/product/offer")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(request)
+				)
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	void updateProductOffer_Success() throws Exception {
+		var request = UtilsTest.loadRequest("model/dto/v1/product_offer_dto.json");
+
+		mockMvc.perform(put("/api/kata/v1/product/offer")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(request)
+				)
 				.andExpect(status().isOk());
 	}
 
