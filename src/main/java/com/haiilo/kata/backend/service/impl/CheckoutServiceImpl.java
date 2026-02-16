@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -88,8 +89,17 @@ public class CheckoutServiceImpl implements CheckoutService {
         var subTotal = cartItemDto.unitPrice().multiply(BigDecimal.valueOf(cartItemDto.quantity()));
         var totalPrice = BigDecimal.ZERO;
 
+        var nowLocalDateTime = LocalDateTime.now();
+
         var availableOfferDtos = productOfferService.getProductOffers(cartItemDto.productId(), null).stream()
-                .filter(offer -> Status.ACTIVE.equals(offer.status()))
+                .filter(offer -> {
+                    var from = offer.offerDto().from();
+                    var until = offer.offerDto().until();
+
+                    return Status.ACTIVE.equals(offer.status())
+                            && !nowLocalDateTime.isBefore(from)
+                            && !nowLocalDateTime.isAfter(until);
+                })
                 .sorted(Comparator.comparing(ProductOfferDto::quantity).reversed())
                 .toList();
 
@@ -142,8 +152,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                     price.subTotal()
             );
 
-            transactionDetails.add(transactionDetail
-            );
+            transactionDetails.add(transactionDetail);
         }
 
         return transactionDetails;
