@@ -25,6 +25,7 @@ public interface CartItemMapper {
 
     @Mapping(target = "cart.id", source = "cartId")
     @Mapping(target = "product.id", source = "productId")
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     CartItem toEntity(CartItemDto dto);
 
     @Mapping(target = "cart.id", ignore = true)

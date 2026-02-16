@@ -17,6 +17,7 @@ public interface CartMapper {
     CartDto toDto(Cart entity);
 
     @Mapping(target = "items", ignore = true)
+    @Mapping(target = "cartStatus", defaultValue = "OPEN")
     Cart toEntity(CartDto dto);
 
     @Mapping(target = "items", ignore = true)

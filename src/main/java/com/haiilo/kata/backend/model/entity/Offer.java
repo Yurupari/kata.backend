@@ -2,6 +2,7 @@ package com.haiilo.kata.backend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.haiilo.kata.backend.model.enums.DiscountType;
+import com.haiilo.kata.backend.model.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +32,7 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Offer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -52,6 +53,10 @@ public class Offer {
 
     @Column(nullable = false)
     private LocalDateTime untilDate;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Status status = Status.ACTIVE;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

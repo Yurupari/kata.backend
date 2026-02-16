@@ -99,6 +99,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                     var until = offer.offerDto().untilDate();
 
                     return Status.ACTIVE.equals(offer.status())
+                            && Status.ACTIVE.equals(offer.offerDto().status())
                             && !nowLocalDateTime.isBefore(from)
                             && !nowLocalDateTime.isAfter(until);
                 })

@@ -6,6 +6,7 @@
   "discountType": "FIXED_AMOUNT",
   "fromDate": "22-02-2026T15:30:00",
   "untilDate": "29-02-2026T15:30:00",
+  "status": "ACTIVE",
   "products": [
     {
       "productId": 1,

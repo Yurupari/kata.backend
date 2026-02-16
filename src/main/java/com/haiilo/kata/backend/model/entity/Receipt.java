@@ -31,7 +31,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class Receipt {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(precision = 19, scale = 4)

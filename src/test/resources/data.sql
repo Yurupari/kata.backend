@@ -5,10 +5,10 @@ VALUES
     (2, 'Lulo', 'Green fruit from Latin-America', 10.00, 'EUR', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Offers
-INSERT INTO kata.offer (id, name, discount, currency, discount_type, from_date, until_date, created_at, updated_at)
+INSERT INTO kata.offer (id, name, discount, currency, discount_type, from_date, until_date, status, created_at, updated_at)
 VALUES
-    (1, 'Summer Sale', 0.15, 'EUR', 'FIXED_AMOUNT', '2026-01-01 00:00:00', '2026-12-31 23:59:59', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (2, 'Summer Sale', 0.25, 'EUR', 'FIXED_AMOUNT', '2026-01-01 00:00:00', '2026-12-31 23:59:59', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    (1, 'Summer Sale', 0.15, 'EUR', 'FIXED_AMOUNT', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (2, 'Summer Sale', 0.25, 'EUR', 'FIXED_AMOUNT', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Product Offers
 INSERT INTO kata.product_offer (id, product_id, offer_id, quantity, status, created_at, updated_at)

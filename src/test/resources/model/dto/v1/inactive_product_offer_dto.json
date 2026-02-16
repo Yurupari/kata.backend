@@ -11,6 +11,6 @@
     "discountType": "FIXED_AMOUNT",
     "fromDate": "14-02-2026T15:30:00",
     "untilDate": "31-12-2026T15:30:00",
-    "status": "ACTIVE"
+    "status": "INACTIVE"
   }
 }

@@ -19,6 +19,7 @@ public interface OfferMapper {
 
     OfferDto toDto(Offer entity);
 
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     Offer toEntity(OfferDto dto);
 
     @Mapping(target = "id", ignore = true)

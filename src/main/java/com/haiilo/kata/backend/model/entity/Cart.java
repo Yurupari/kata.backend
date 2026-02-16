@@ -30,7 +30,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class Cart {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Builder.Default

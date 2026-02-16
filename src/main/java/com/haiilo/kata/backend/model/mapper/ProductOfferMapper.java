@@ -24,6 +24,7 @@ public interface ProductOfferMapper {
 
     @Mapping(target = "product.id", source = "productId")
     @Mapping(target = "offer", source = "offerDto")
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     ProductOffer toEntity(ProductOfferDto dto);
 
     @Mapping(target = "id", ignore = true)

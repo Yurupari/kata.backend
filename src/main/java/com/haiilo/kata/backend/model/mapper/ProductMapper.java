@@ -20,6 +20,7 @@ public interface ProductMapper {
     ProductDto toDto(Product entity);
 
     @Mapping(target = "offers", ignore = true)
+    @Mapping(target = "status", defaultValue = "ACTIVE")
     Product toEntity(ProductDto dto);
 
     @Mapping(target = "offers", ignore = true)
