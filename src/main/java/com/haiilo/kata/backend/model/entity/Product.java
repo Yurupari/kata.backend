@@ -18,8 +18,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -34,6 +34,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private String description;
@@ -41,16 +42,19 @@ public class Product {
     @Column(precision = 19, scale = 4)
     private BigDecimal unitPrice;
 
+    @Column(nullable = false)
     private String currency;
 
-    private Status status;
+    @Builder.Default
+    private Status status = Status.ACTIVE;
 
     @CreationTimestamp
-    @Column(updatable = false)
-    private Date createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    private Date updatedAt;
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

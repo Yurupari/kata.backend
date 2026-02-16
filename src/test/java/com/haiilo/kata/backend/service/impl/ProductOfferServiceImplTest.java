@@ -94,7 +94,7 @@ class ProductOfferServiceImplTest {
 
     @Test
     void addProductOffer_Success() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
         var productOffer = jsonTestUtils.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
 
         when(productOfferRepository.save(any())).thenReturn(productOffer);

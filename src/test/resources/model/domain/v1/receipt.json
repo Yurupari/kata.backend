@@ -13,18 +13,21 @@
   "transactionDetails": [
     {
       "productId": 1,
-      "name": "Apple",
+      "productName": "Apple",
       "quantity": 1,
       "unitPrice": 0.45,
-      "appliedOffer": {
-        "description": "Test offer",
-        "discountAmount": 0.10
-      },
+      "appliedOffers": [
+        {
+          "description": "Test offer",
+          "discountAmount": 0.10,
+          "discountType": "FIXED_AMOUNT"
+        }
+      ],
       "subtotal": 0.45
     },
     {
       "productId": 2,
-      "name": "Banana",
+      "productName": "Banana",
       "quantity": 3,
       "unitPrice": 0.20,
       "subtotal": 0.60

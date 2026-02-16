@@ -16,10 +16,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -49,8 +50,8 @@ public class Receipt {
     private List<TransactionDetail> transactionDetails;
 
     @CreationTimestamp
-    @Column(updatable = false)
-    private Date createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @OneToOne
     @JoinColumn(name = "cart_id", referencedColumnName = "id")

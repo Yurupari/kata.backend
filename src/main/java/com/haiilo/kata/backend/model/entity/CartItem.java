@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(schema = "kata", name = "cart_item")
@@ -39,14 +39,17 @@ public class CartItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Column(nullable = false)
     private Integer quantity;
 
-    private Status status;
+    @Builder.Default
+    private Status status = Status.ACTIVE;
 
     @CreationTimestamp
-    @Column(updatable = false)
-    private Date createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    private Date updatedAt;
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }

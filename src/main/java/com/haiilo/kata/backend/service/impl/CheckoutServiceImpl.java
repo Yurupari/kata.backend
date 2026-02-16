@@ -8,6 +8,7 @@ import com.haiilo.kata.backend.model.dto.PriceDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.enums.CartStatus;
+import com.haiilo.kata.backend.model.enums.Status;
 import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.model.json.AppliedOffer;
 import com.haiilo.kata.backend.model.json.TransactionDetail;
@@ -51,7 +52,9 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     private ReceiptDto generateReceipt(CartDto cartDto) {
-        var cartItems = cartDto.items();
+        var cartItems = cartDto.items().stream()
+                .filter(item -> Status.ACTIVE.equals(item.status()))
+                .toList();
 
         var prices = cartItems.stream()
                 .map(this::calculateBestProductPrice)
@@ -86,6 +89,7 @@ public class CheckoutServiceImpl implements CheckoutService {
         var totalPrice = BigDecimal.ZERO;
 
         var availableOfferDtos = productOfferService.getProductOffers(cartItemDto.productId(), null).stream()
+                .filter(offer -> Status.ACTIVE.equals(offer.status()))
                 .sorted(Comparator.comparing(ProductOfferDto::quantity).reversed())
                 .toList();
 

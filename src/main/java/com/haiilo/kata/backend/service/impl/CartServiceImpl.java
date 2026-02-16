@@ -6,7 +6,6 @@ import com.haiilo.kata.backend.model.entity.Cart;
 import com.haiilo.kata.backend.model.enums.CartStatus;
 import com.haiilo.kata.backend.model.mapper.CartMapper;
 import com.haiilo.kata.backend.repository.CartRepository;
-import com.haiilo.kata.backend.service.CartItemService;
 import com.haiilo.kata.backend.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,6 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
 
-    private final CartItemService cartItemService;
-
     private final CartMapper cartMapper;
 
     @Override
@@ -28,9 +25,7 @@ public class CartServiceImpl implements CartService {
         var cart = cartRepository.findByCartStatusIn(List.of(CartStatus.OPEN, CartStatus.PENDING)).stream()
                 .findFirst()
                 .orElseGet(() -> {
-                    var newCart = Cart.builder()
-                            .cartStatus(CartStatus.OPEN)
-                            .build();
+                    var newCart = Cart.builder().build();
 
                     return cartRepository.save(newCart);
                 });
