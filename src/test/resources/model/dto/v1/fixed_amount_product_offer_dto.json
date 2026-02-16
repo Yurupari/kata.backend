@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 2,
+  "status": "ACTIVE",
+  "offerDto": {
+    "id": 1,
+    "name": "Super Discount",
+    "discount": 0.50,
+    "currency": "EUR",
+    "discountType": "FIXED_AMOUNT",
+    "fromDate": "14-02-2026T15:30:00",
+    "untilDate": "31-12-2026T15:30:00"
+  }
+}

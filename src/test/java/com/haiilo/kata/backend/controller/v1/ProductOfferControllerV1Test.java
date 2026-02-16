@@ -33,7 +33,7 @@ class ProductOfferControllerV1Test {
     @Test
     void addProductOffer_Success() throws IOException {
         var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductSelectionRequest.class);
-        var newProductOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var newProductOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
 
         when(productOfferService.addProductOffer(any())).thenReturn(newProductOfferDto);
 
@@ -47,7 +47,7 @@ class ProductOfferControllerV1Test {
 
     @Test
     void updateProductOffer() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
 
         var response = productOfferControllerV1.updateProductOffer(productOfferDto);
 

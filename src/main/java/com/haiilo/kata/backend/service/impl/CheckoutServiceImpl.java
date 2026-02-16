@@ -8,6 +8,7 @@ import com.haiilo.kata.backend.model.dto.PriceDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.enums.CartStatus;
+import com.haiilo.kata.backend.model.enums.DiscountType;
 import com.haiilo.kata.backend.model.enums.Status;
 import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.model.json.AppliedOffer;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -107,7 +109,13 @@ public class CheckoutServiceImpl implements CheckoutService {
             if (remainingQuantity >= productOfferDto.quantity()) {
                 int timesToApply = remainingQuantity / productOfferDto.quantity();
 
-                var offerPrice = cartItemDto.unitPrice().multiply(BigDecimal.valueOf(timesToApply));
+                var offerPrice = calculatePrice(
+                        productOfferDto.offerDto().discountType(),
+                        productOfferDto.offerDto().discount(),
+                        cartItemDto.unitPrice(),
+                        productOfferDto.quantity(),
+                        timesToApply
+                );
 
                 totalPrice = totalPrice.add(offerPrice);
 
@@ -130,6 +138,28 @@ public class CheckoutServiceImpl implements CheckoutService {
                 totalPrice,
                 discount
         );
+    }
+
+    private BigDecimal calculatePrice(
+            DiscountType discountType,
+            BigDecimal discountValue,
+            BigDecimal unitPrice,
+            int quantity,
+            int timesToApply
+    ) {
+        BigDecimal offerPrice = BigDecimal.ZERO;
+        switch (discountType) {
+            case PERCENTAGE -> {
+                BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
+                        discountValue.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)
+                );
+                var normalPriceForBundle = unitPrice.multiply(BigDecimal.valueOf(quantity));
+                offerPrice = normalPriceForBundle.multiply(discountMultiplier);
+            }
+            case FIXED_AMOUNT -> offerPrice = discountValue.multiply(BigDecimal.valueOf(timesToApply));
+        }
+
+        return offerPrice;
     }
 
     private List<TransactionDetail> generateTransactionDetails(List<PriceDto> prices, List<CartItemDto> cartItems) {

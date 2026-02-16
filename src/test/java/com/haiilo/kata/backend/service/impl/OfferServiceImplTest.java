@@ -65,6 +65,8 @@ class OfferServiceImplTest {
         var response = offerService.addOffer(offerDto);
 
         assertNotNull(response);
+
+        verify(productOfferService, times(1)).addProductOffer(any());
     }
 
     @Test

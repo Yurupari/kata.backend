@@ -94,7 +94,7 @@ class ProductOfferServiceImplTest {
 
     @Test
     void addProductOffer_Success() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
         var productOffer = jsonTestUtils.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
 
         when(productOfferRepository.save(any())).thenReturn(productOffer);
@@ -106,7 +106,7 @@ class ProductOfferServiceImplTest {
 
     @Test
     void updateProductOffer_Success() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
         var productOffer = jsonTestUtils.loadObject("model/domain/v1/product_offer.json", ProductOffer.class);
 
         when(productOfferRepository.findById(any())).thenReturn(Optional.of(productOffer));

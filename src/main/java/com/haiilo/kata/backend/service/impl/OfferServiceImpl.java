@@ -19,6 +19,8 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferMapper offerMapper;
 
+    private final ProductOfferService productOfferService;
+
     @Override
     public OfferDto getOffer(Long id) {
         return offerRepository.findById(id)
@@ -29,6 +31,8 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public OfferDto addOffer(OfferDto offerDto) {
         var offer = offerRepository.save(offerMapper.toEntity(offerDto));
+
+        offerDto.products().forEach(productOfferService::addProductOffer);
 
         return offerMapper.toDto(offer);
     }
