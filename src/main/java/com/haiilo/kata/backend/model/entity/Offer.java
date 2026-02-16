@@ -1,13 +1,14 @@
 package com.haiilo.kata.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.haiilo.kata.backend.model.enums.DiscountType;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +20,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(schema = "kata", name = "offer")
@@ -29,6 +28,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,13 +44,14 @@ public class Offer {
     private String currency;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DiscountType discountType;
 
     @Column(nullable = false)
-    private LocalDateTime from;
+    private LocalDateTime fromDate;
 
     @Column(nullable = false)
-    private LocalDateTime until;
+    private LocalDateTime untilDate;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -59,8 +60,4 @@ public class Offer {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ProductOffer> products = new ArrayList<>();
 }

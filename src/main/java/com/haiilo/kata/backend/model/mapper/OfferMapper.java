@@ -19,10 +19,8 @@ public interface OfferMapper {
 
     OfferDto toDto(Offer entity);
 
-    @Mapping(target = "products", ignore = true)
     Offer toEntity(OfferDto dto);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "products", ignore = true)
     void updateEntityFromDto(OfferDto dto, @MappingTarget Offer entity);
 }

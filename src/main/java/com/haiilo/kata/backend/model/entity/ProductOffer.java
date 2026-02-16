@@ -1,8 +1,11 @@
 package com.haiilo.kata.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.haiilo.kata.backend.model.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,6 +36,7 @@ public class ProductOffer {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private Product product;
 
     @ManyToOne
@@ -42,6 +46,7 @@ public class ProductOffer {
     @Column(nullable = false)
     private Integer quantity;
 
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private Status status = Status.ACTIVE;
 

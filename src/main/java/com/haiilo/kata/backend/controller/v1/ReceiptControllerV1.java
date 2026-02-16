@@ -27,8 +27,8 @@ public class ReceiptControllerV1 {
     })
     @GetMapping
     public ResponseEntity<ReceiptDto> getReceipt(
-            @RequestParam Long id,
-            @RequestParam Long cartId
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) Long cartId
     ) {
         var receiptDto = receiptService.getReceipt(id, cartId);
 

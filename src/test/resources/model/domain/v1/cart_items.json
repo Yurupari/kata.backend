@@ -8,12 +8,12 @@
       "unitPrice": 0.45,
       "currency": "EUR",
       "status": "ACTIVE",
-      "createdAt": "14-02-2026T15:30:00.000Z",
-      "updatedAt": "14-02-2026T15:30:00.000Z"
+      "createdAt": "14-02-2026T15:30:00",
+      "updatedAt": "14-02-2026T15:30:00"
     },
     "quantity": 2,
-    "createdAt": "14-02-2026T15:30:00.000Z",
-    "updatedAt": "14-02-2026T15:30:00.000Z"
+    "createdAt": "14-02-2026T15:30:00",
+    "updatedAt": "14-02-2026T15:30:00"
   },
   {
     "id": 2,
@@ -24,11 +24,11 @@
       "unitPrice": 0.25,
       "currency": "EUR",
       "status": "ACTIVE",
-      "createdAt": "14-02-2026T15:30:00.000Z",
-      "updatedAt": "14-02-2026T15:30:00.000Z"
+      "createdAt": "14-02-2026T15:30:00",
+      "updatedAt": "14-02-2026T15:30:00"
     },
     "quantity": 2,
-    "createdAt": "14-02-2026T15:30:00.000Z",
-    "updatedAt": "14-02-2026T15:30:00.000Z"
+    "createdAt": "14-02-2026T15:30:00",
+    "updatedAt": "14-02-2026T15:30:00"
   }
 ]

@@ -1,4 +1,5 @@
 {
   "name": "Milk",
-  "unitPrice": "0.95"
+  "unitPrice": "0.95",
+  "currency": "EUR"
 }

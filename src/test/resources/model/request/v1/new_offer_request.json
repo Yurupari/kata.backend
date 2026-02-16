@@ -3,8 +3,8 @@
   "discount": 0.35,
   "currency": "EUR",
   "discountType": "FIXED_AMOUNT",
-  "from": "14-02-2026T15:30:00.000Z",
-  "until": "22-02-2026T15:30:00.000Z",
+  "fromDate": "14-02-2026T15:30:00",
+  "untilDate": "22-02-2026T15:30:00",
   "products": [
     {
       "productId": 1,

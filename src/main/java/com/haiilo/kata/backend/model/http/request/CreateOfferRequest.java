@@ -1,5 +1,6 @@
 package com.haiilo.kata.backend.model.http.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.haiilo.kata.backend.model.enums.DiscountType;
 
 import java.math.BigDecimal;
@@ -11,8 +12,8 @@ public record CreateOfferRequest(
         BigDecimal discount,
         String currency,
         DiscountType discountType,
-        LocalDateTime from,
-        LocalDateTime until,
+        @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") LocalDateTime fromDate,
+        @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") LocalDateTime untilDate,
         List<ProductSelectionRequest> products
 ) {
 }

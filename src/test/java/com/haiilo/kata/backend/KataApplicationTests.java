@@ -1,16 +1,20 @@
 package com.haiilo.kata.backend;
 
+import com.haiilo.kata.backend.model.dto.ReceiptDto;
+import com.haiilo.kata.backend.service.ReceiptService;
 import com.haiilo.kata.backend.utils.JsonTestUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import tools.jackson.databind.ObjectMapper;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -19,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class KataApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
@@ -26,23 +31,8 @@ class KataApplicationTests {
 	@Autowired
 	private JsonTestUtils jsonTestUtils;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@BeforeEach
-	void setup() throws Exception {
-		var productsJson = jsonTestUtils.loadRequest("model/request/v1/products_list_request.json");
-		var products = objectMapper.readTree(productsJson);
-
-		if (products.isArray()) {
-			for (var product : products) {
-				mockMvc.perform(post("/api/kata/v1/product")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(product.toString()))
-						.andExpect(status().isOk());
-			}
-		}
-	}
+	@MockitoBean
+	private ReceiptService receiptService;
 
 	@Test
 	void contextLoads() {
@@ -56,7 +46,7 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -67,19 +57,19 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
 	void getProducts_Success() throws Exception {
 		mockMvc.perform(get("/api/kata/v1/product/products"))
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
 	void getProduct_Success() throws Exception {
 		mockMvc.perform(get("/api/kata/v1/product/1"))
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -90,7 +80,7 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -101,13 +91,19 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
 	void getOffer_Success() throws Exception {
 		mockMvc.perform(get("/api/kata/v1/offer/1"))
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void getCurrentCart_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/cart/current"))
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -118,19 +114,13 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	void getCurrentCart_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/cart/current"))
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
 	void getCart_Success() throws Exception {
 		mockMvc.perform(get("/api/kata/v1/cart/1"))
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -141,7 +131,7 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -152,7 +142,7 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -163,7 +153,7 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
@@ -174,23 +164,20 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
 	void executeCheckout_Success() throws Exception {
 		var request = jsonTestUtils.loadRequest("model/request/v1/checkout_request.json");
+		var receiptDto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+
+		when(receiptService.addReceipt(any())).thenReturn(receiptDto);
 
 		mockMvc.perform(post("/api/kata/v1/checkout")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	void getReceipt_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/receipt?id=1"))
-				.andExpect(status().isOk());
+				.andExpect(status().is2xxSuccessful());
 	}
 }

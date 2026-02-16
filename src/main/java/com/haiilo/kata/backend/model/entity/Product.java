@@ -1,9 +1,12 @@
 package com.haiilo.kata.backend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.haiilo.kata.backend.model.enums.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,6 +48,7 @@ public class Product {
     @Column(nullable = false)
     private String currency;
 
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private Status status = Status.ACTIVE;
 
@@ -57,6 +61,7 @@ public class Product {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     @Builder.Default
     private List<ProductOffer> offers = new ArrayList<>();
 }

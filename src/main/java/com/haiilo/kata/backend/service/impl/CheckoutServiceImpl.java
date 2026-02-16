@@ -93,8 +93,8 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         var availableOfferDtos = productOfferService.getProductOffers(cartItemDto.productId(), null).stream()
                 .filter(offer -> {
-                    var from = offer.offerDto().from();
-                    var until = offer.offerDto().until();
+                    var from = offer.offerDto().fromDate();
+                    var until = offer.offerDto().untilDate();
 
                     return Status.ACTIVE.equals(offer.status())
                             && !nowLocalDateTime.isBefore(from)

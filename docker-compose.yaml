@@ -8,6 +8,8 @@ services:
       - POSTGRES_PASSWORD
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   redis:
     image: "redis:alpine"

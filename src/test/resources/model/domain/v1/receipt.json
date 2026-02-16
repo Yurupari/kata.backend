@@ -3,8 +3,8 @@
   "cart": {
     "id": 1,
     "cartStatus": "PROCESSED",
-    "createdAt": "14-02-2026T15:30:00.000Z",
-    "updatedAt": "14-02-2026T15:30:00.000Z"
+    "createdAt": "14-02-2026T15:30:00",
+    "updatedAt": "14-02-2026T15:30:00"
   },
   "subTotal": 1.05,
   "discount": 0.10,
@@ -33,5 +33,5 @@
       "subtotal": 0.60
     }
   ],
-  "createdAt": "14-02-2026T15:30:00.000Z"
+  "createdAt": "14-02-2026T15:30:00"
 }

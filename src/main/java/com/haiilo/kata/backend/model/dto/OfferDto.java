@@ -1,6 +1,6 @@
 package com.haiilo.kata.backend.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.haiilo.kata.backend.model.enums.DiscountType;
 
 import java.math.BigDecimal;
@@ -13,8 +13,8 @@ public record OfferDto(
         BigDecimal discount,
         String currency,
         DiscountType discountType,
-        LocalDateTime from,
-        LocalDateTime until,
-        @JsonIgnoreProperties("offerDto") List<ProductOfferDto> products
+        @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") LocalDateTime fromDate,
+        @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") LocalDateTime untilDate,
+        List<ProductOfferDto> products
 ) {
 }
