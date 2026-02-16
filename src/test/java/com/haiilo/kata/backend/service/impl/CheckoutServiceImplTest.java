@@ -1,14 +1,11 @@
 package com.haiilo.kata.backend.service.impl;
 
 import com.haiilo.kata.backend.model.dto.CartDto;
-import com.haiilo.kata.backend.model.dto.OfferDto;
-import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
-import com.haiilo.kata.backend.model.http.CheckoutRequest;
+import com.haiilo.kata.backend.model.dto.ReceiptDto;
+import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.service.CartService;
-import com.haiilo.kata.backend.service.OfferService;
 import com.haiilo.kata.backend.service.ProductOfferService;
-import com.haiilo.kata.backend.service.ProductService;
 import com.haiilo.kata.backend.service.ReceiptService;
 import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
@@ -20,6 +17,9 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -32,13 +32,7 @@ class CheckoutServiceImplTest {
     private CartService cartService;
 
     @MockitoBean
-    private ProductService productService;
-
-    @MockitoBean
     private ProductOfferService productOfferService;
-
-    @MockitoBean
-    private OfferService offerService;
 
     @MockitoBean
     private ReceiptService receiptService;
@@ -49,18 +43,18 @@ class CheckoutServiceImplTest {
     @Test
     void executeCheckout_Success() throws IOException {
         var checkoutRequest = new CheckoutRequest(1L);
-        var cartDto = jsonTestUtils.loadObject("model/dto/v1/cart_dto.json", CartDto.class);
-        var apple_dto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var cartDto = jsonTestUtils.loadObject("model/dto/v1/pending_cart_dto.json", CartDto.class);
         var product_offer_dto = List.of(jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class));
-        var offer_dto = jsonTestUtils.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
+        var receipt_dto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
 
-        when(cartService.getCurrentCart()).thenReturn(cartDto);
-        when(productService.getProduct(1L)).thenReturn(apple_dto);
-        when(productOfferService.getProductOffers(1L, null)).thenReturn(product_offer_dto);
-        when(offerService.getOffer(1L)).thenReturn(offer_dto);
+        when(cartService.getCart(any())).thenReturn(cartDto);
+        when(productOfferService.getProductOffers(any(), any())).thenReturn(product_offer_dto);
+        when(receiptService.addReceipt(any())).thenReturn(receipt_dto);
 
         var response = checkoutService.executeCheckout(checkoutRequest);
 
         assertNotNull(response);
+
+        verify(cartService, times(1)).updateCart(any(CartDto.class));
     }
 }

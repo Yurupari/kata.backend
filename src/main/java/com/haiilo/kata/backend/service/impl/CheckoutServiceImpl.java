@@ -1,6 +1,7 @@
 package com.haiilo.kata.backend.service.impl;
 
 import com.haiilo.kata.backend.exception.CartConflictStatusException;
+import com.haiilo.kata.backend.exception.CheckoutException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
 import com.haiilo.kata.backend.model.dto.PriceDto;
@@ -8,15 +9,17 @@ import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.enums.CartStatus;
 import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
+import com.haiilo.kata.backend.model.json.AppliedOffer;
+import com.haiilo.kata.backend.model.json.TransactionDetail;
 import com.haiilo.kata.backend.service.CartService;
 import com.haiilo.kata.backend.service.CheckoutService;
-import com.haiilo.kata.backend.service.OfferService;
 import com.haiilo.kata.backend.service.ProductOfferService;
-import com.haiilo.kata.backend.service.ProductService;
 import com.haiilo.kata.backend.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,22 +28,20 @@ import java.util.List;
 public class CheckoutServiceImpl implements CheckoutService {
 
     private final CartService cartService;
-    private final ProductService productService;
     private final ProductOfferService productOfferService;
-    private final OfferService offerService;
     private final ReceiptService receiptService;
 
     @Override
     public ReceiptDto executeCheckout(CheckoutRequest checkoutRequest) {
         var cartDto = cartService.getCart(checkoutRequest.cartId());
 
-        validateCart(cartDto); return null;
+        validateCart(cartDto);
 
-        /*var receiptDto = calculateBestProductPrice(cartDto.items());
+        var receiptDto = generateReceipt(cartDto);
 
         processCart(cartDto);
 
-        return receiptService.addReceipt(receiptDto);*/
+        return receiptService.addReceipt(receiptDto);
     }
 
     private void validateCart(CartDto cartDto) {
@@ -49,14 +50,40 @@ public class CheckoutServiceImpl implements CheckoutService {
         }
     }
 
-    private ReceiptDto generateReceipt(List<CartItemDto> cartItemDtos) {
-        return null;
+    private ReceiptDto generateReceipt(CartDto cartDto) {
+        var cartItems = cartDto.items();
+
+        var prices = cartItems.stream()
+                .map(this::calculateBestProductPrice)
+                .toList();
+
+        var subTotal = BigDecimal.ZERO;
+        var discount = BigDecimal.ZERO;
+        var total = BigDecimal.ZERO;
+
+        for (var price : prices) {
+            subTotal = subTotal.add(price.subTotal());
+            discount = discount.add(price.discount());
+            total = total.add(price.total());
+        }
+
+        var transactionDetails = generateTransactionDetails(prices, cartItems);
+
+        return new ReceiptDto(
+                null,
+                cartDto.id(),
+                subTotal,
+                discount,
+                total,
+                cartDto.currency(),
+                transactionDetails
+        );
     }
 
-    /*private PriceDto calculateBestProductPrice(CartItemDto cartItemDto) {
+    private PriceDto calculateBestProductPrice(CartItemDto cartItemDto) {
         int remainingQuantity = cartItemDto.quantity();
-        double subTotal = cartItemDto.unitPrice() * cartItemDto.quantity();
-        double totalPrice = 0.0;
+        var subTotal = cartItemDto.unitPrice().multiply(BigDecimal.valueOf(cartItemDto.quantity()));
+        var totalPrice = BigDecimal.ZERO;
 
         var availableOfferDtos = productOfferService.getProductOffers(cartItemDto.productId(), null).stream()
                 .sorted(Comparator.comparing(ProductOfferDto::quantity).reversed())
@@ -66,28 +93,67 @@ public class CheckoutServiceImpl implements CheckoutService {
             if (remainingQuantity >= productOfferDto.quantity()) {
                 int timesToApply = remainingQuantity / productOfferDto.quantity();
 
-                double offerPrice = cartItemDto.unitPrice() * timesToApply;
+                var offerPrice = cartItemDto.unitPrice().multiply(BigDecimal.valueOf(timesToApply));
 
-                totalPrice += offerPrice;
+                totalPrice = totalPrice.add(offerPrice);
 
                 remainingQuantity %= productOfferDto.quantity();
             }
         }
 
         if (remainingQuantity > 0) {
-            double normalPrice = cartItemDto.unitPrice() * remainingQuantity;
-            totalPrice += normalPrice;
+            var normalPrice = cartItemDto.unitPrice().multiply(BigDecimal.valueOf(remainingQuantity));
+            totalPrice = totalPrice.add(normalPrice);
         }
 
-        double discount = subTotal - totalPrice;
+        var discount = subTotal.subtract(totalPrice);
 
         return new PriceDto(
+                cartItemDto.productId(),
+                availableOfferDtos,
                 cartItemDto.unitPrice(),
                 subTotal,
                 totalPrice,
                 discount
         );
-    }*/
+    }
+
+    private List<TransactionDetail> generateTransactionDetails(List<PriceDto> prices, List<CartItemDto> cartItems) {
+        List<TransactionDetail> transactionDetails = new ArrayList<>();
+
+        for (var cartItem : cartItems) {
+            var price = prices.stream()
+                    .filter(p -> p.productId().equals(cartItem.productId()))
+                    .findFirst()
+                    .orElseThrow(() -> new CheckoutException(String.format(
+                            "Product not found during the checkout calculation: productId=%s",
+                            cartItem.productId())));
+
+            var transactionDetail = new TransactionDetail(
+                    cartItem.productId(),
+                    cartItem.productName(),
+                    cartItem.quantity(),
+                    cartItem.unitPrice(),
+                    generateAppliedOffers(price),
+                    price.subTotal()
+            );
+
+            transactionDetails.add(transactionDetail
+            );
+        }
+
+        return transactionDetails;
+    }
+
+    private List<AppliedOffer> generateAppliedOffers(PriceDto price) {
+        return price.offers().stream()
+                .map(offer -> new AppliedOffer(
+                        offer.offerDto().name(),
+                        offer.offerDto().discount(),
+                        offer.offerDto().discountType()
+                        ))
+                .toList();
+    }
 
     private void processCart(CartDto cartDto) {
         var updatedCartDto = new CartDto(
