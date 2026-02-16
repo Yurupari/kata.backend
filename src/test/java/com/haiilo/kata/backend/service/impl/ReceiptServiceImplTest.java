@@ -1,37 +1,43 @@
 package com.haiilo.kata.backend.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.exception.ReceiptNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.entity.Receipt;
+import com.haiilo.kata.backend.model.mapper.ReceiptMapper;
+import com.haiilo.kata.backend.model.mapper.ReceiptMapperImpl;
 import com.haiilo.kata.backend.repository.ReceiptRepository;
 import com.haiilo.kata.backend.utils.JsonTestUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class ReceiptServiceImplTest {
+class ReceiptServiceImplTest extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private ReceiptServiceImpl receiptService;
 
-    @MockitoBean
+    @Mock
     private ReceiptRepository receiptRepository;
 
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @Spy
+    private ReceiptMapper receiptMapper = new ReceiptMapperImpl();
 
     @Test
     void getReceipt_Success() throws IOException {

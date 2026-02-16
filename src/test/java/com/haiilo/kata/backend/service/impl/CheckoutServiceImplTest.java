@@ -1,5 +1,6 @@
 package com.haiilo.kata.backend.service.impl;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.exception.CartConflictStatusException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
@@ -8,11 +9,9 @@ import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.service.CartService;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import com.haiilo.kata.backend.service.ReceiptService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,23 +23,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class CheckoutServiceImplTest {
+class CheckoutServiceImplTest extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private CheckoutServiceImpl checkoutService;
 
-    @MockitoBean
+    @Mock
     private CartService cartService;
 
-    @MockitoBean
+    @Mock
     private ProductOfferService productOfferService;
 
-    @MockitoBean
+    @Mock
     private ReceiptService receiptService;
-
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
 
     @Test
     void executeCheckout_FixedAmount_Success() throws IOException {

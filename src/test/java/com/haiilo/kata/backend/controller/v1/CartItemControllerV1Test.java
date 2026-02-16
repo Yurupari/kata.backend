@@ -1,13 +1,15 @@
 package com.haiilo.kata.backend.controller.v1;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
 import com.haiilo.kata.backend.model.http.request.CreateCartItemRequest;
+import com.haiilo.kata.backend.model.mapper.CartItemMapper;
+import com.haiilo.kata.backend.model.mapper.CartItemMapperImpl;
 import com.haiilo.kata.backend.service.CartItemService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 
 import java.io.IOException;
 
@@ -18,17 +20,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class CartItemControllerV1Test {
+class CartItemControllerV1Test extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private CartItemControllerV1 cartItemControllerV1;
 
-    @MockitoBean
+    @Mock
     private CartItemService cartItemService;
 
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @Spy
+    private CartItemMapper cartItemMapper = new CartItemMapperImpl();
 
     @Test
     void addCartItem() throws IOException {

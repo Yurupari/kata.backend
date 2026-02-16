@@ -1,12 +1,18 @@
 package com.haiilo.kata.backend.service.impl;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.exception.OfferNotFoundException;
 import com.haiilo.kata.backend.model.dto.OfferDto;
 import com.haiilo.kata.backend.model.entity.Offer;
+import com.haiilo.kata.backend.model.mapper.OfferMapper;
+import com.haiilo.kata.backend.model.mapper.OfferMapperImpl;
 import com.haiilo.kata.backend.repository.OfferRepository;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -22,20 +28,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class OfferServiceImplTest {
+class OfferServiceImplTest extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private OfferServiceImpl offerService;
 
-    @MockitoBean
+    @Mock
     private OfferRepository offerRepository;
 
-    @MockitoBean
+    @Mock
     private ProductOfferService productOfferService;
 
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @Spy
+    private OfferMapper offerMapper = new OfferMapperImpl();
 
     @Test
     void getOffer_Success() throws IOException {

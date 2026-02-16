@@ -1,34 +1,54 @@
 package com.haiilo.kata.backend.controller.v1;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.model.dto.OfferDto;
 import com.haiilo.kata.backend.model.http.request.CreateOfferRequest;
+import com.haiilo.kata.backend.model.mapper.OfferMapperImpl;
+import com.haiilo.kata.backend.model.mapper.ProductOfferMapper;
 import com.haiilo.kata.backend.service.OfferService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class OfferControllerV1Test {
+class OfferControllerV1Test extends BaseUnitTest {
 
-    @Autowired
     private OfferControllerV1 offerControllerV1;
 
-    @MockitoBean
+    @Mock
     private OfferService offerService;
 
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @Mock
+    private ProductOfferMapper productOfferMapper;
+
+    @Spy
+    @InjectMocks
+    private OfferMapperImpl offerMapper;
+
+    @BeforeEach
+    void setup() {
+        super.setUpBase();
+
+        this.offerControllerV1 = new OfferControllerV1();
+
+        ReflectionTestUtils.setField(offerControllerV1, "offerService", offerService);
+        ReflectionTestUtils.setField(offerControllerV1, "offerMapper", offerMapper);
+    }
 
     @Test
     void getOffer_Success() throws IOException {
@@ -46,17 +66,25 @@ class OfferControllerV1Test {
 
     @Test
     void addOffer_Success() throws IOException {
-        var offerDto = jsonTestUtils.loadObject("model/request/v1/new_offer_request.json", CreateOfferRequest.class);
-        var newOfferDto = jsonTestUtils.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        when(offerService.addOffer(any())).thenReturn(newOfferDto);
+        try {
+            var offerDto = jsonTestUtils.loadObject("model/request/v1/new_offer_request.json", CreateOfferRequest.class);
+            var newOfferDto = jsonTestUtils.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
 
-        var response = offerControllerV1.addOffer(offerDto);
+            when(offerService.addOffer(any())).thenReturn(newOfferDto);
 
-        assertNotNull(response);
-        assertNotNull(response.getStatusCode());
-        assertEquals(201, response.getStatusCode().value());
-        assertNotNull(response.getBody());
+            var response = offerControllerV1.addOffer(offerDto);
+
+            assertNotNull(response);
+            assertNotNull(response.getStatusCode());
+            assertEquals(201, response.getStatusCode().value());
+            assertNotNull(response.getBody());
+            assertNotNull(response.getHeaders().getLocation());
+        } finally {
+            RequestContextHolder.resetRequestAttributes();
+        }
     }
 
     @Test

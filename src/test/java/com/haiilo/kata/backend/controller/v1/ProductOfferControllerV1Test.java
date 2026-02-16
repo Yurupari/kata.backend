@@ -1,13 +1,15 @@
 package com.haiilo.kata.backend.controller.v1;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
+import com.haiilo.kata.backend.model.mapper.ProductOfferMapper;
+import com.haiilo.kata.backend.model.mapper.ProductOfferMapperImpl;
 import com.haiilo.kata.backend.service.ProductOfferService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 
 import java.io.IOException;
 
@@ -18,17 +20,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class ProductOfferControllerV1Test {
+class ProductOfferControllerV1Test extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private ProductOfferControllerV1 productOfferControllerV1;
 
-    @MockitoBean
+    @Mock
     private ProductOfferService productOfferService;
 
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @Spy
+    private ProductOfferMapper productOfferMapper = new ProductOfferMapperImpl();
 
     @Test
     void addProductOffer_Success() throws IOException {

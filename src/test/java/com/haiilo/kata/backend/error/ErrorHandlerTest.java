@@ -1,5 +1,6 @@
 package com.haiilo.kata.backend.error;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.exception.CartConflictStatusException;
 import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.exception.CartNotFoundException;
@@ -11,16 +12,15 @@ import com.haiilo.kata.backend.exception.ReceiptNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.enums.CartStatus;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
 import org.springframework.http.HttpStatus;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
-class ErrorHandlerTest {
+class ErrorHandlerTest extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private ErrorHandler errorHandler;
 
     @Test

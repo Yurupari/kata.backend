@@ -1,15 +1,16 @@
 package com.haiilo.kata.backend.service.impl;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.exception.ProductNotFoundException;
 import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.model.entity.Product;
+import com.haiilo.kata.backend.model.mapper.ProductMapper;
+import com.haiilo.kata.backend.model.mapper.ProductMapperImpl;
 import com.haiilo.kata.backend.repository.ProductRepository;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import tools.jackson.databind.ObjectMapper;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,20 +24,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class ProductServiceImplTest {
+class ProductServiceImplTest extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private ProductServiceImpl productService;
 
-    @MockitoBean
+    @Mock
     private ProductRepository productRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @Spy
+    private ProductMapper productMapper = new ProductMapperImpl();
 
     @Test
     void getProducts_Success() throws IOException {

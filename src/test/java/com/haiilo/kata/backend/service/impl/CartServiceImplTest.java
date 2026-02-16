@@ -1,17 +1,18 @@
 package com.haiilo.kata.backend.service.impl;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.exception.CartNotFoundException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.entity.Cart;
 import com.haiilo.kata.backend.model.enums.CartStatus;
+import com.haiilo.kata.backend.model.mapper.CartItemMapper;
+import com.haiilo.kata.backend.model.mapper.CartMapperImpl;
 import com.haiilo.kata.backend.repository.CartRepository;
-import com.haiilo.kata.backend.service.CartItemService;
-import com.haiilo.kata.backend.service.ReceiptService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,23 +27,26 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class CartServiceImplTest {
+class CartServiceImplTest extends BaseUnitTest {
 
-    @Autowired
     private CartServiceImpl cartService;
 
-    @MockitoBean
+    @Mock
     private CartRepository cartRepository;
 
-    @MockitoBean
-    private CartItemService cartItemService;
+    @Mock
+    private CartItemMapper cartItemMapper;
 
-    @MockitoBean
-    private ReceiptService receiptService;
+    @Spy
+    @InjectMocks
+    private CartMapperImpl cartMapper;
 
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @BeforeEach
+    void setup() {
+        super.setUpBase();
+
+        this.cartService = new CartServiceImpl(cartRepository, cartMapper);
+    }
 
     @Test
     void getCurrentCart_Success() throws IOException {

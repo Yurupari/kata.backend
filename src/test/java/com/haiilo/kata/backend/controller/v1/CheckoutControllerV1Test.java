@@ -1,13 +1,12 @@
 package com.haiilo.kata.backend.controller.v1;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
 import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.service.CheckoutService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.io.IOException;
 
@@ -16,17 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class CheckoutControllerV1Test {
+class CheckoutControllerV1Test extends BaseUnitTest {
 
-    @Autowired
+    @InjectMocks
     private CheckoutControllerV1 checkoutControllerV1;
 
-    @MockitoBean
+    @Mock
     private CheckoutService checkoutService;
-
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
 
     @Test
     void executeCheckout_Success() throws IOException {

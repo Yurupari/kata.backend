@@ -1,13 +1,18 @@
 package com.haiilo.kata.backend.controller.v1;
 
+import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.model.http.request.CreateProductRequest;
+import com.haiilo.kata.backend.model.mapper.ProductMapper;
+import com.haiilo.kata.backend.model.mapper.ProductMapperImpl;
 import com.haiilo.kata.backend.service.ProductService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,20 +21,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class ProductControllerV1Test {
-    @Autowired
+class ProductControllerV1Test extends BaseUnitTest {
+
+    @InjectMocks
     private ProductControllerV1 productControllerV1;
 
-    @MockitoBean
+    @Mock
     private ProductService productService;
 
-    @Autowired
-    private JsonTestUtils jsonTestUtils;
+    @Spy
+    private ProductMapper productMapper = new ProductMapperImpl();
 
     @Test
     void getProducts_Success() throws IOException {
@@ -60,17 +66,25 @@ class ProductControllerV1Test {
 
     @Test
     void addProduct_Success() throws IOException {
-        var productDto = jsonTestUtils.loadObject("model/request/v1/new_product_request.json", CreateProductRequest.class);
-        var newProductDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        when(productService.addProduct(any())).thenReturn(newProductDto);
+        try {
+            var productDto = jsonTestUtils.loadObject("model/request/v1/new_product_request.json", CreateProductRequest.class);
+            var newProductDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
 
-        var response = productControllerV1.addProduct(productDto);
+            when(productService.addProduct(any())).thenReturn(newProductDto);
 
-        assertNotNull(response);
-        assertNotNull(response.getStatusCode());
-        assertEquals(201, response.getStatusCode().value());
-        assertNotNull(response.getBody());
+            var response = productControllerV1.addProduct(productDto);
+
+            assertNotNull(response);
+            assertNotNull(response.getStatusCode());
+            assertEquals(201, response.getStatusCode().value());
+            assertNotNull(response.getBody());
+            assertNotNull(response.getHeaders().getLocation());
+        } finally {
+            RequestContextHolder.resetRequestAttributes();
+        }
     }
 
     @Test
