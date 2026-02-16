@@ -8,7 +8,7 @@ import com.haiilo.kata.backend.exception.ProductNotFoundException;
 import com.haiilo.kata.backend.exception.ProductOfferNotFoundException;
 import com.haiilo.kata.backend.exception.ReceiptNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
-import com.haiilo.kata.backend.model.http.ErrorResponse;
+import com.haiilo.kata.backend.model.http.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

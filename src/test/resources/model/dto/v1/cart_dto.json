@@ -7,9 +7,10 @@
       "cartId": 1,
       "productId": 1,
       "productName": "Apple",
-      "quantity": 2
+      "unitPrice": 0.45,
+      "currency": "EUR",
+      "quantity": 2,
+      "status": "ACTIVE"
     }
-  ],
-  "total": 0.90,
-  "currency": "EUR"
+  ]
 }

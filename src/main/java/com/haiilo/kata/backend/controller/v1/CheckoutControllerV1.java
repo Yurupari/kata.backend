@@ -1,7 +1,7 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
-import com.haiilo.kata.backend.model.http.CheckoutRequest;
+import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.service.CheckoutService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

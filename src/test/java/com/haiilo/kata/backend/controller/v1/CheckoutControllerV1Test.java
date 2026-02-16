@@ -1,7 +1,7 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
-import com.haiilo.kata.backend.model.http.CheckoutRequest;
+import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.service.CheckoutService;
 import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;

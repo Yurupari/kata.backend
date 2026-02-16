@@ -1,19 +1,17 @@
-package com.haiilo.kata.backend.model.dto;
+package com.haiilo.kata.backend.model.http.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.haiilo.kata.backend.model.enums.DiscountType;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public record OfferDto(
-        Long id,
+public record CreateOfferRequest(
         String name,
         BigDecimal discount,
         String currency,
         DiscountType discountType,
         String from,
         String until,
-        @JsonIgnoreProperties("offerDto") List<ProductOfferDto> products
+        List<ProductSelectionRequest> products
 ) {
 }

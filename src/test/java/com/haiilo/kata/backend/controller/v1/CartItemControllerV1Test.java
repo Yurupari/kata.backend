@@ -1,6 +1,7 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.CartItemDto;
+import com.haiilo.kata.backend.model.http.request.CreateCartItemRequest;
 import com.haiilo.kata.backend.service.CartItemService;
 import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
@@ -31,12 +32,12 @@ class CartItemControllerV1Test {
 
     @Test
     void addCartItem() throws IOException {
-        var cartItemDto = jsonTestUtils.loadObject("model/request/v1/new_cart_item_request.json", CartItemDto.class);
+        var createCartItemRequest = jsonTestUtils.loadObject("model/request/v1/new_cart_item_request.json", CreateCartItemRequest.class);
         var newCartItemDto = jsonTestUtils.loadObject("model/dto/v1/cart_item_dto.json", CartItemDto.class);
 
         when(cartItemService.addCartItem(any())).thenReturn(newCartItemDto);
 
-        var response = cartItemControllerV1.addCartItem(cartItemDto);
+        var response = cartItemControllerV1.addCartItem(createCartItemRequest);
 
         assertNotNull(response);
         assertNotNull(response.getStatusCode());

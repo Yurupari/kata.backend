@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +38,8 @@ public class Product {
 
     private String description;
 
-    private Double unitPrice;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal unitPrice;
 
     private String currency;
 

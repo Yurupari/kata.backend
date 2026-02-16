@@ -3,6 +3,7 @@ package com.haiilo.kata.backend.model.mapper;
 import com.haiilo.kata.backend.config.CentralMapperConfig;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
 import com.haiilo.kata.backend.model.entity.CartItem;
+import com.haiilo.kata.backend.model.http.request.CreateCartItemRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,6 +13,9 @@ import org.mapstruct.MappingTarget;
         config = CentralMapperConfig.class
 )
 public interface CartItemMapper {
+
+    CartItemDto toDto(CreateCartItemRequest request);
+
     @Mapping(target = "cartId", source = "cart.id")
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "productName", source = "product.name")

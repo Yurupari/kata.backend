@@ -8,14 +8,16 @@
   "until": "22-02-2026T15:30:00.000Z",
   "products": [
     {
+      "id": 101,
       "productId": 1,
-      "offerId": 1,
-      "quantity": 1
+      "quantity": 1,
+      "status": "ACTIVE"
     },
     {
+      "id": 102,
       "productId": 2,
-      "offerId": 1,
-      "quantity": 3
+      "quantity": 3,
+      "status": "ACTIVE"
     }
   ]
 }

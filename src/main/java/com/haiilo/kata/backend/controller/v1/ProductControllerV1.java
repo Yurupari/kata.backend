@@ -1,6 +1,8 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ProductDto;
+import com.haiilo.kata.backend.model.http.request.CreateProductRequest;
+import com.haiilo.kata.backend.model.mapper.ProductMapper;
 import com.haiilo.kata.backend.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +28,9 @@ public class ProductControllerV1 {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    ProductMapper productMapper;
 
     @Operation(summary = "Get all products")
     @ApiResponses(value = {
@@ -56,8 +61,8 @@ public class ProductControllerV1 {
             @ApiResponse(responseCode = "400", description = "Invalid product data provided")
     })
     @PostMapping
-    public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody ProductDto productDto) {
-        var newProductDto = productService.addProduct(productDto);
+    public ResponseEntity<ProductDto> addProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
+        var newProductDto = productService.addProduct(productMapper.toDto(createProductRequest));
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

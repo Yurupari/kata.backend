@@ -1,10 +1,12 @@
 package com.haiilo.kata.backend.model.json;
 
+import java.math.BigDecimal;
+
 public record TransactionDetail(
     Long productId,
     String name,
     Integer quantity,
-    Double unitPrice,
+    BigDecimal unitPrice,
     AppliedOffer appliedOffer,
-    Double subtotal
+    BigDecimal subtotal
 ) {}

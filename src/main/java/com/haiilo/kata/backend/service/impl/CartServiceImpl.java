@@ -46,13 +46,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto addCart(CartDto cartDto) {
-        var cart = cartRepository.save(cartMapper.toEntity(cartDto));
-
-        return cartMapper.toDto(cart);
-    }
-
-    @Override
     public void updateCart(CartDto cartDto) {
         var existingCart = cartRepository.findById(cartDto.id())
                 .orElseThrow(() -> new CartNotFoundException(cartDto.id()));

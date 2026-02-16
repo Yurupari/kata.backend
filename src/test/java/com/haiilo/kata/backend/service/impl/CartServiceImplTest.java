@@ -88,18 +88,6 @@ class CartServiceImplTest {
     }
 
     @Test
-    void addCart_Success() throws IOException {
-        var cartDto = jsonTestUtils.loadObject("model/request/v1/new_cart_request.json", CartDto.class);
-        var cart = jsonTestUtils.loadObject("model/domain/v1/cart.json", Cart.class);
-
-        when(cartRepository.save(any())).thenReturn(cart);
-
-        var response = cartService.addCart(cartDto);
-
-        assertNotNull(response);
-    }
-
-    @Test
     void updateCart_Success() throws IOException {
         var carDto = jsonTestUtils.loadObject("model/dto/v1/cart_dto.json", CartDto.class);
         var cart = jsonTestUtils.loadObject("model/domain/v1/cart.json", Cart.class);

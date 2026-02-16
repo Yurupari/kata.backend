@@ -1,6 +1,8 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
+import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
+import com.haiilo.kata.backend.model.mapper.ProductOfferMapper;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +22,9 @@ public class ProductOfferControllerV1 {
 
     @Autowired
     private ProductOfferService productOfferService;
+
+    @Autowired
+    private ProductOfferMapper productOfferMapper;
     
     @Operation(summary = "Add product's offer")
     @ApiResponses(value = {
@@ -27,8 +32,8 @@ public class ProductOfferControllerV1 {
             @ApiResponse(responseCode = "400", description = "Invalid product's offer data provided")
     })
     @PostMapping
-    public ResponseEntity<ProductOfferDto> addProductOffer(@Valid @RequestBody ProductOfferDto productOfferDto) {
-        var newProductOfferDto = productOfferService.addProductOffer(productOfferDto);
+    public ResponseEntity<ProductOfferDto> addProductOffer(@Valid @RequestBody ProductSelectionRequest productSelectionRequest) {
+        var newProductOfferDto = productOfferService.addProductOffer(productOfferMapper.toDto(productSelectionRequest));
         
         return ResponseEntity.ok(newProductOfferDto);
     }

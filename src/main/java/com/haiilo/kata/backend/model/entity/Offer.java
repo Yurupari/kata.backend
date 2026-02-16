@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,8 @@ public class Offer {
     
     private String name;
 
-    private Double discount;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal discount;
 
     private String currency;
 

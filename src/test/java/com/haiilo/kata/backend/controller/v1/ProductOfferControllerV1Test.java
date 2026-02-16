@@ -1,6 +1,7 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
+import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class ProductOfferControllerV1Test {
 
     @Test
     void addProductOffer_Success() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductSelectionRequest.class);
         var newProductOfferDto = jsonTestUtils.loadObject("model/dto/v1/product_offer_dto.json", ProductOfferDto.class);
 
         when(productOfferService.addProductOffer(any())).thenReturn(newProductOfferDto);

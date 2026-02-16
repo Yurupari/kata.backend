@@ -3,6 +3,7 @@ package com.haiilo.kata.backend.model.mapper;
 import com.haiilo.kata.backend.config.CentralMapperConfig;
 import com.haiilo.kata.backend.model.dto.ProductDto;
 import com.haiilo.kata.backend.model.entity.Product;
+import com.haiilo.kata.backend.model.http.request.CreateProductRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -13,6 +14,9 @@ import org.mapstruct.MappingTarget;
         uses = {ProductOfferMapper.class}
 )
 public interface ProductMapper {
+    @Mapping(target = "offers", ignore = true)
+    ProductDto toDto(CreateProductRequest request);
+
     ProductDto toDto(Product entity);
 
     @Mapping(target = "offers", ignore = true)

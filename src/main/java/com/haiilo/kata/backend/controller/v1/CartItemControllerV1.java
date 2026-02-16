@@ -1,6 +1,8 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.CartItemDto;
+import com.haiilo.kata.backend.model.http.request.CreateCartItemRequest;
+import com.haiilo.kata.backend.model.mapper.CartItemMapper;
 import com.haiilo.kata.backend.service.CartItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,14 +23,17 @@ public class CartItemControllerV1 {
     @Autowired
     private CartItemService cartItemService;
 
+    @Autowired
+    private CartItemMapper cartItemMapper;
+
     @Operation(summary = "Add an item to a cart")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully created the cart's item"),
             @ApiResponse(responseCode = "400", description = "Invalid cart's item data provided")
     })
     @PostMapping
-    public ResponseEntity<CartItemDto> addCartItem(@Valid @RequestBody CartItemDto cartItemDto) {
-        var newCartItemDto = cartItemService.addCartItem(cartItemDto);
+    public ResponseEntity<CartItemDto> addCartItem(@Valid @RequestBody CreateCartItemRequest createCartItemRequest) {
+        var newCartItemDto = cartItemService.addCartItem(cartItemMapper.toDto(createCartItemRequest));
 
         return ResponseEntity.ok(newCartItemDto);
     }

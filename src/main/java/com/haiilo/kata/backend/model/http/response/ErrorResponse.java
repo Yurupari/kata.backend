@@ -1,4 +1,4 @@
-package com.haiilo.kata.backend.model.http;
+package com.haiilo.kata.backend.model.http.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;

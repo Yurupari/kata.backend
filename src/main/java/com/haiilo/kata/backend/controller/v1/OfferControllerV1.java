@@ -1,6 +1,8 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.OfferDto;
+import com.haiilo.kata.backend.model.http.request.CreateOfferRequest;
+import com.haiilo.kata.backend.model.mapper.OfferMapper;
 import com.haiilo.kata.backend.service.OfferService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,6 +29,9 @@ public class OfferControllerV1 {
     @Autowired
     private OfferService offerService;
 
+    @Autowired
+    private OfferMapper offerMapper;
+
     @Operation(summary = "Get offer by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the offer"),
@@ -45,8 +50,8 @@ public class OfferControllerV1 {
             @ApiResponse(responseCode = "400", description = "Invalid offer data provided")
     })
     @PostMapping
-    public ResponseEntity<OfferDto> addOffer(@Valid @RequestBody OfferDto offerDto) {
-        var newOfferDto = offerService.addOffer(offerDto);
+    public ResponseEntity<OfferDto> addOffer(@Valid @RequestBody CreateOfferRequest createOfferRequest) {
+        var newOfferDto = offerService.addOffer(offerMapper.toDto(createOfferRequest));
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

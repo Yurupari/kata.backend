@@ -18,6 +18,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -33,11 +34,14 @@ public class Receipt {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Double subTotal;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal subTotal;
 
-    private Double discount;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal discount;
 
-    private Double total;
+    @Column(precision = 19, scale = 4)
+    private BigDecimal total;
 
     private String currency;
 
