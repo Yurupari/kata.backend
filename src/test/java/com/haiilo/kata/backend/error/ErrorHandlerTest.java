@@ -3,6 +3,7 @@ package com.haiilo.kata.backend.error;
 import com.haiilo.kata.backend.exception.CartConflictStatusException;
 import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.exception.CartNotFoundException;
+import com.haiilo.kata.backend.exception.CheckoutException;
 import com.haiilo.kata.backend.exception.OfferNotFoundException;
 import com.haiilo.kata.backend.exception.ProductNotFoundException;
 import com.haiilo.kata.backend.exception.ProductOfferNotFoundException;
@@ -100,6 +101,15 @@ class ErrorHandlerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void handleCheckoutException() {
+        var response = errorHandler.handleCheckoutException(new CheckoutException("Checkout failed"));
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
