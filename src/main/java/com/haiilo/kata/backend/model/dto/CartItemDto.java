@@ -7,6 +7,8 @@ public record CartItemDto(
         Long cartId,
         Long productId,
         String productName,
+        Double unitPrice,
+        String currency,
         Integer quantity,
         Status status
 ) {

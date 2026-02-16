@@ -1,11 +1,17 @@
 package com.haiilo.kata.backend.service.impl;
 
+import com.haiilo.kata.backend.exception.CartNotFoundException;
 import com.haiilo.kata.backend.model.dto.CartDto;
+import com.haiilo.kata.backend.model.entity.Cart;
+import com.haiilo.kata.backend.model.enums.CartStatus;
+import com.haiilo.kata.backend.model.mapper.CartMapper;
 import com.haiilo.kata.backend.repository.CartRepository;
 import com.haiilo.kata.backend.service.CartItemService;
 import com.haiilo.kata.backend.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,23 +21,44 @@ public class CartServiceImpl implements CartService {
 
     private final CartItemService cartItemService;
 
+    private final CartMapper cartMapper;
+
     @Override
     public CartDto getCurrentCart() {
-        return null;
+        var cart = cartRepository.findByCartStatusIn(List.of(CartStatus.OPEN, CartStatus.PENDING)).stream()
+                .findFirst()
+                .orElseGet(() -> {
+                    var newCart = Cart.builder()
+                            .cartStatus(CartStatus.OPEN)
+                            .build();
+
+                    return cartRepository.save(newCart);
+                });
+
+        return cartMapper.toDto(cart);
     }
 
     @Override
     public CartDto getCart(Long id) {
-        return null;
+        return cartRepository.findById(id)
+                .map(cartMapper::toDto)
+                .orElseThrow(() -> new CartNotFoundException(id));
     }
 
     @Override
     public CartDto addCart(CartDto cartDto) {
-        return null;
+        var cart = cartRepository.save(cartMapper.toEntity(cartDto));
+
+        return cartMapper.toDto(cart);
     }
 
     @Override
     public void updateCart(CartDto cartDto) {
+        var existingCart = cartRepository.findById(cartDto.id())
+                .orElseThrow(() -> new CartNotFoundException(cartDto.id()));
 
+        cartMapper.updateEntityFromDto(cartDto, existingCart);
+
+        cartRepository.save(existingCart);
     }
 }

@@ -12,7 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,7 +36,7 @@ class ReceiptServiceImplTest {
     void getReceipt_Success() throws IOException {
         var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 
-        when(receiptRepository.findById(any())).thenReturn(Optional.of(receipt));
+        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(List.of(receipt));
 
         var response = receiptService.getReceipt(1L, 1L);
 
@@ -46,7 +47,7 @@ class ReceiptServiceImplTest {
     void getReceiptOnlyId_Success() throws IOException {
         var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 
-        when(receiptRepository.findById(any())).thenReturn(Optional.of(receipt));
+        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(List.of(receipt));
 
         var response = receiptService.getReceipt(1L, null);
 
@@ -57,7 +58,7 @@ class ReceiptServiceImplTest {
     void getReceiptOnlyCartId_Success() throws IOException {
         var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 
-        when(receiptRepository.findById(any())).thenReturn(Optional.of(receipt));
+        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(List.of(receipt));
 
         var response = receiptService.getReceipt(null, 1L);
 
@@ -71,7 +72,7 @@ class ReceiptServiceImplTest {
 
     @Test
     void getReceipt_NotFound() throws IOException {
-        when(receiptRepository.findById(any())).thenReturn(Optional.empty());
+        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(new ArrayList<>());
 
         assertThrows(ReceiptNotFoundException.class, () -> receiptService.getReceipt(1L, 1L));
     }

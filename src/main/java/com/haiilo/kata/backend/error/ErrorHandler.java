@@ -1,5 +1,6 @@
 package com.haiilo.kata.backend.error;
 
+import com.haiilo.kata.backend.exception.CartConflictStatusException;
 import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.exception.CartNotFoundException;
 import com.haiilo.kata.backend.exception.OfferNotFoundException;
@@ -66,6 +67,12 @@ public class ErrorHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         ErrorResponse errorResponse = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleCartConflictStatusException(CartConflictStatusException e) {
+        ErrorResponse errorResponse = buildErrorResponse(HttpStatus.CONFLICT, e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler

@@ -1,5 +1,6 @@
 package com.haiilo.kata.backend.error;
 
+import com.haiilo.kata.backend.exception.CartConflictStatusException;
 import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.exception.CartNotFoundException;
 import com.haiilo.kata.backend.exception.OfferNotFoundException;
@@ -7,6 +8,7 @@ import com.haiilo.kata.backend.exception.ProductNotFoundException;
 import com.haiilo.kata.backend.exception.ProductOfferNotFoundException;
 import com.haiilo.kata.backend.exception.ReceiptNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
+import com.haiilo.kata.backend.model.enums.CartStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,7 +69,7 @@ class ErrorHandlerTest {
 
     @Test
     void handleReceiptNotFoundException() {
-        var response = errorHandler.handleReceiptNotFoundException(new ReceiptNotFoundException(1L));
+        var response = errorHandler.handleReceiptNotFoundException(new ReceiptNotFoundException(1L, 1L));
 
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -89,6 +91,15 @@ class ErrorHandlerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void handleCartConflictStatusException() {
+        var response = errorHandler.handleCartConflictStatusException(new CartConflictStatusException(CartStatus.OPEN));
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
     }
 
