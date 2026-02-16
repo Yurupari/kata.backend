@@ -1,0 +1,100 @@
+CREATE SCHEMA IF NOT EXISTS kata;
+SET search_path TO kata;
+
+
+
+
+
+-- TABLES --
+
+-- Product
+CREATE TABLE IF NOT EXISTS product (
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    unit_price NUMERIC(19, 4),
+    currency VARCHAR(3) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+
+-- Offer
+CREATE TABLE IF NOT EXISTS offer (
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    discount NUMERIC(19, 4) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    discount_type VARCHAR(50) NOT NULL,
+    from_date TIMESTAMP NOT NULL,
+    until_date TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+
+-- ProductOffer
+CREATE TABLE IF NOT EXISTS product_offer (
+    id BIGINT PRIMARY KEY,
+    product_id BIGINT REFERENCES product(id),
+    offer_id BIGINT REFERENCES offer(id),
+    quantity INTEGER NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+
+-- Cart
+CREATE TABLE IF NOT EXISTS cart (
+    id BIGINT PRIMARY KEY,
+    cart_status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+
+-- CartItem
+CREATE TABLE IF NOT EXISTS cart_item (
+    id BIGINT PRIMARY KEY,
+    cart_id BIGINT REFERENCES cart(id) ON DELETE CASCADE,
+    product_id BIGINT REFERENCES product(id),
+    quantity INTEGER NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+
+-- Receipt
+CREATE TABLE IF NOT EXISTS receipt (
+    id BIGINT PRIMARY KEY,
+    sub_total NUMERIC(19, 4),
+    discount NUMERIC(19, 4),
+    total NUMERIC(19, 4),
+    currency VARCHAR(3),
+    transaction_details JSONB,
+    created_at TIMESTAMP NOT NULL,
+    cart_id BIGINT UNIQUE REFERENCES cart(id)
+);
+
+
+
+
+
+-- INSERTS --
+
+-- Products
+INSERT INTO product (id, name, description, unit_price, currency, status, created_at, updated_at)
+VALUES
+    (1, 'Apple', 'Fresh Red Apple', 0.45, 'EUR', 'ACTIVE', NOW(), NOW()),
+    (2, 'Milk', 'Organic Whole Milk 1L', 1.20, 'EUR', 'ACTIVE', NOW(), NOW()),
+    (3, 'Bread', 'Artisan Sourdough', 2.50, 'EUR', 'ACTIVE', NOW(), NOW());
+
+-- Offers
+INSERT INTO offer (id, name, discount, currency, discount_type, from_date, until_date, created_at, updated_at)
+VALUES
+    (1, 'Apple Bulk Discount', 1.00, 'EUR', 'FIXED_AMOUNT', '2026-01-01 00:00:00', '2026-12-31 23:59:59', NOW(), NOW()),
+    (2, 'Milk Flash Sale', 20.00, 'EUR', 'PERCENTAGE', '2026-02-15 00:00:00', '2026-02-28 23:59:59', NOW(), NOW());
+
+-- Product-Offer
+INSERT INTO product_offer (id, product_id, offer_id, quantity, status, created_at, updated_at)
+VALUES
+    (1, 1, 1, 3, 'ACTIVE', NOW(), NOW()),
+    (2, 2, 2, 1, 'ACTIVE', NOW(), NOW());
