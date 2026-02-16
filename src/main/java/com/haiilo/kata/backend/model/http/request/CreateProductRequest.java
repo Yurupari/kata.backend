@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public record CreateProductRequest(
         String name,
+        String description,
         BigDecimal unitPrice,
         String currency
 ) {
