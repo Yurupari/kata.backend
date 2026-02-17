@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -82,7 +81,7 @@ class ReceiptServiceImplTest extends BaseUnitTest {
 
     @Test
     void getReceipt_NotFound() throws IOException {
-        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(new ArrayList<>());
+        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(List.of());
 
         assertThrows(ReceiptNotFoundException.class, () -> receiptService.getReceipt(1L, 1L));
     }

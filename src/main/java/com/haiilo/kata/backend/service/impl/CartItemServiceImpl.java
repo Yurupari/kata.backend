@@ -23,6 +23,8 @@ public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemMapper cartItemMapper;
 
+    private final CartService cartService;
+
     @Override
     public List<CartItemDto> getCartItems(Long cartId) {
         Optional.ofNullable(cartId).orElseThrow(() -> new ValidationException("Cart ID cannot be null"));
@@ -47,9 +49,19 @@ public class CartItemServiceImpl implements CartItemService {
 
         validateCartItem(cartItemDto, false);
 
-        var cartItem = cartItemRepository.save(cartItemMapper.toEntity(cartItemDto));
+        return cartItemRepository.findByCartIdAndProductId(cartItemDto.cartId(), cartItemDto.productId()).stream()
+                .findAny()
+                .map(cartItem -> {
+                    cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
+                    var updatedCartItem =cartItemRepository.save(cartItem);
 
-        return cartItemMapper.toDto(cartItem);
+                    return cartItemMapper.toDto(updatedCartItem);
+                })
+                .orElseGet(() -> {
+                    var cartItem = cartItemRepository.save(cartItemMapper.toEntity(cartItemDto));
+
+                    return cartItemMapper.toDto(cartItem);
+                });
     }
 
     @Override
