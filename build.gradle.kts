@@ -25,7 +25,7 @@ repositories {
 	mavenCentral()
 }
 
-val springdocVersion = "2.5.0"
+val springdocVersion = "2.8.5"
 val mapstructVersion = "1.6.3"
 
 dependencies {

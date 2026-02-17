@@ -19,3 +19,9 @@ spring:
       port: ${REDIS_PORT}
       time_in_minutes: ${REDIS_TIME_IN_MINUTES}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
