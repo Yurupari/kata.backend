@@ -4,8 +4,9 @@ import com.haiilo.kata.backend.exception.ProductOfferNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.http.request.CreateProductOffersRequest;
-import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
+import com.haiilo.kata.backend.model.http.request.CreateProductSelectionRequest;
 import com.haiilo.kata.backend.model.http.request.UpdateProductOffersRequest;
+import com.haiilo.kata.backend.model.http.request.UpdateProductSelectionRequest;
 import com.haiilo.kata.backend.model.mapper.ProductOfferMapper;
 import com.haiilo.kata.backend.repository.ProductOfferRepository;
 import com.haiilo.kata.backend.service.ProductOfferService;
@@ -44,12 +45,12 @@ public class ProductOfferServiceImpl implements ProductOfferService {
     }
 
     @Override
-    public ProductOfferDto addProductOffer(ProductSelectionRequest productSelectionRequest) {
-        log.info("Create product offer: {}", productSelectionRequest.toString());
+    public ProductOfferDto addProductOffer(CreateProductSelectionRequest createProductSelectionRequest) {
+        log.info("Create product offer: {}", createProductSelectionRequest.toString());
 
-        var productOfferDto = productOfferMapper.toDto(productSelectionRequest);
+        validateCreateProductOffer(createProductSelectionRequest);
 
-        validateProductOffer(productOfferDto, false);
+        var productOfferDto = productOfferMapper.toDto(createProductSelectionRequest);
 
         var productOffer = productOfferRepository.save(productOfferMapper.toEntity(productOfferDto));
 
@@ -60,11 +61,11 @@ public class ProductOfferServiceImpl implements ProductOfferService {
     public List<ProductOfferDto> addProductOffers(CreateProductOffersRequest createProductOffersRequest) {
         log.info("Create product offers: {}", createProductOffersRequest.productOffers().size());
 
+        createProductOffersRequest.productOffers().forEach(this::validateCreateProductOffer);
+
         var productOfferDtos = createProductOffersRequest.productOffers().stream()
                 .map(productOfferMapper::toDto)
                 .toList();
-
-        productOfferDtos.forEach(po -> validateProductOffer(po, false));
 
         var productOffers = productOfferDtos.stream()
                 .map(productOfferMapper::toEntity)
@@ -78,38 +79,38 @@ public class ProductOfferServiceImpl implements ProductOfferService {
     }
 
     @Override
-    public void updateProductOffer(ProductOfferDto productOfferDto) {
-        log.info("Update product offer: {}", productOfferDto.toString());
+    public void updateProductOffer(UpdateProductSelectionRequest updateProductSelectionRequest) {
+        log.info("Update product offer: {}", updateProductSelectionRequest.toString());
 
-        validateProductOffer(productOfferDto, true);
+        validateUpdateProductOffer(updateProductSelectionRequest);
 
-        var existingProductOffer = productOfferRepository.findById(productOfferDto.id())
-                .orElseThrow(() -> new ProductOfferNotFoundException(productOfferDto.id()));
+        var existingProductOffer = productOfferRepository.findById(updateProductSelectionRequest.id())
+                .orElseThrow(() -> new ProductOfferNotFoundException(updateProductSelectionRequest.id()));
 
-        productOfferMapper.updateEntityFromDto(productOfferDto, existingProductOffer);
+        productOfferMapper.updateEntityFromRequest(updateProductSelectionRequest, existingProductOffer);
 
         productOfferRepository.save(existingProductOffer);
     }
 
     @Override
-    public void updateProductOffers(UpdateProductOffersRequest createProductOffersRequest) {
-        log.info("Update product offers: {}", createProductOffersRequest.productOffers().size());
+    public void updateProductOffers(UpdateProductOffersRequest updateProductOffersRequest) {
+        log.info("Update product offers: {}", updateProductOffersRequest.productOffers().size());
 
-        var productOfferDtos = createProductOffersRequest.productOffers();
+        var selections = updateProductOffersRequest.productOffers();
 
-        productOfferDtos.forEach(po -> validateProductOffer(po, true));
+        selections.forEach(this::validateUpdateProductOffer);
 
-        var existingProductOffers = productOfferRepository.findByIdIn(productOfferDtos.stream()
-                .map(ProductOfferDto::id)
+        var existingProductOffers = productOfferRepository.findByIdIn(selections.stream()
+                .map(UpdateProductSelectionRequest::id)
                 .toList());
 
         existingProductOffers.forEach(epo -> {
-            var productOfferDto = productOfferDtos.stream()
+            var selection = selections.stream()
                     .filter(po -> po.id().equals(epo.getId()))
                     .findFirst().orElse(null);
 
-            Optional.ofNullable(productOfferDto)
-                    .ifPresent(pod -> productOfferMapper.updateEntityFromDto(pod, epo));
+            Optional.ofNullable(selection)
+                    .ifPresent(s -> productOfferMapper.updateEntityFromRequest(s, epo));
         });
 
         productOfferRepository.saveAll(existingProductOffers);
@@ -121,19 +122,22 @@ public class ProductOfferServiceImpl implements ProductOfferService {
         }
     }
 
-    private void validateProductOffer(ProductOfferDto productOfferDto, boolean isUpdate) {
-        if (isUpdate) {
-            Optional.ofNullable(productOfferDto.id())
-                    .orElseThrow(() -> new ValidationException("ID cannot be null"));
-        }
-
-        Optional.ofNullable(productOfferDto.productId())
+    private void validateCreateProductOffer(CreateProductSelectionRequest updateProductSelectionRequest) {
+        Optional.ofNullable(updateProductSelectionRequest.productId())
                 .orElseThrow(() -> new ValidationException("Product ID cannot be null"));
 
-        Optional.ofNullable(productOfferDto.offerDto())
+        Optional.ofNullable(updateProductSelectionRequest.offerId())
                 .orElseThrow(() -> new ValidationException("Offer cannot be null"));
+    }
 
-        Optional.ofNullable(productOfferDto.offerDto().id())
-                .orElseThrow(() -> new ValidationException("Offer ID cannot be null"));
+    private void validateUpdateProductOffer(UpdateProductSelectionRequest updateProductSelectionRequest) {
+        Optional.ofNullable(updateProductSelectionRequest.id())
+                .orElseThrow(() -> new ValidationException("ID cannot be null"));
+
+        Optional.ofNullable(updateProductSelectionRequest.productId())
+                .orElseThrow(() -> new ValidationException("Product ID cannot be null"));
+
+        Optional.ofNullable(updateProductSelectionRequest.offerId())
+                .orElseThrow(() -> new ValidationException("Offer cannot be null"));
     }
 }

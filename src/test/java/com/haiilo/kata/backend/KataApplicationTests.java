@@ -187,7 +187,7 @@ class KataApplicationTests {
 
 	@Test
 	void updateProductOffer_Success() throws Exception {
-		var request = jsonTestUtils.loadRequest("model/dto/v1/fixed_amount_product_offer_dto.json");
+		var request = jsonTestUtils.loadRequest("model/dto/v1/update_product_selection_request.json");
 
 		mockMvc.perform(put("/api/kata/v1/product/offer")
 						.contentType(MediaType.APPLICATION_JSON)

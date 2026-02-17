@@ -2,9 +2,9 @@ package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.http.request.CreateProductOffersRequest;
-import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
+import com.haiilo.kata.backend.model.http.request.CreateProductSelectionRequest;
 import com.haiilo.kata.backend.model.http.request.UpdateProductOffersRequest;
-import com.haiilo.kata.backend.model.mapper.ProductOfferMapper;
+import com.haiilo.kata.backend.model.http.request.UpdateProductSelectionRequest;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -52,8 +52,8 @@ public class ProductOfferControllerV1 {
             @ApiResponse(responseCode = "400", description = "Invalid product's offer data provided")
     })
     @PostMapping
-    public ResponseEntity<ProductOfferDto> addProductOffer(@Valid @RequestBody ProductSelectionRequest productSelectionRequest) {
-        var newProductOfferDto = productOfferService.addProductOffer(productSelectionRequest);
+    public ResponseEntity<ProductOfferDto> addProductOffer(@Valid @RequestBody CreateProductSelectionRequest createProductSelectionRequest) {
+        var newProductOfferDto = productOfferService.addProductOffer(createProductSelectionRequest);
         
         return ResponseEntity.ok(newProductOfferDto);
     }
@@ -77,8 +77,8 @@ public class ProductOfferControllerV1 {
             @ApiResponse(responseCode = "404", description = "Product's offer not found")
     })
     @PutMapping
-    public ResponseEntity<Void> updateProductOffer(@Valid @RequestBody ProductOfferDto productOfferDto) {
-        productOfferService.updateProductOffer(productOfferDto);
+    public ResponseEntity<Void> updateProductOffer(@Valid @RequestBody UpdateProductSelectionRequest updateProductSelectionRequest) {
+        productOfferService.updateProductOffer(updateProductSelectionRequest);
 
         return ResponseEntity.noContent().build();
     }

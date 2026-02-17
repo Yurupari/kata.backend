@@ -3,8 +3,9 @@ package com.haiilo.kata.backend.controller.v1;
 import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.http.request.CreateProductOffersRequest;
-import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
+import com.haiilo.kata.backend.model.http.request.CreateProductSelectionRequest;
 import com.haiilo.kata.backend.model.http.request.UpdateProductOffersRequest;
+import com.haiilo.kata.backend.model.http.request.UpdateProductSelectionRequest;
 import com.haiilo.kata.backend.model.mapper.ProductOfferMapper;
 import com.haiilo.kata.backend.model.mapper.ProductOfferMapperImpl;
 import com.haiilo.kata.backend.service.ProductOfferService;
@@ -36,7 +37,9 @@ class ProductOfferControllerV1Test extends BaseUnitTest {
 
     @Test
     void getProductOffers_Success() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject(
+                "model/dto/v1/fixed_amount_product_offer_dto.json",
+                ProductOfferDto.class);
 
         when(productOfferService.getProductOffers(any(), any())).thenReturn(List.of(productOfferDto));
 
@@ -49,8 +52,12 @@ class ProductOfferControllerV1Test extends BaseUnitTest {
 
     @Test
     void addProductOffer_Success() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductSelectionRequest.class);
-        var newProductOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
+        var productOfferDto = jsonTestUtils.loadObject(
+                "model/request/v1/new_product_offer_request.json",
+                CreateProductSelectionRequest.class);
+        var newProductOfferDto = jsonTestUtils.loadObject(
+                "model/dto/v1/fixed_amount_product_offer_dto.json",
+                ProductOfferDto.class);
 
         when(productOfferService.addProductOffer(any())).thenReturn(newProductOfferDto);
 
@@ -64,8 +71,12 @@ class ProductOfferControllerV1Test extends BaseUnitTest {
 
     @Test
     void addProductOffers_Success() throws IOException {
-        var productSelectionRequest = jsonTestUtils.loadObject("model/request/v1/create_product_offer_request.json", CreateProductOffersRequest.class);
-        var newProductOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
+        var productSelectionRequest = jsonTestUtils.loadObject(
+                "model/request/v1/create_product_offer_request.json",
+                CreateProductOffersRequest.class);
+        var newProductOfferDto = jsonTestUtils.loadObject(
+                "model/dto/v1/fixed_amount_product_offer_dto.json",
+                ProductOfferDto.class);
 
         when(productOfferService.addProductOffers(any())).thenReturn(List.of(newProductOfferDto));
 
@@ -79,21 +90,25 @@ class ProductOfferControllerV1Test extends BaseUnitTest {
 
     @Test
     void updateProductOffer() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
+        var updateProductSelectionRequest = jsonTestUtils.loadObject(
+                "model/dto/v1/update_product_selection_request.json",
+                UpdateProductSelectionRequest.class);
 
-        var response = productOfferControllerV1.updateProductOffer(productOfferDto);
+        var response = productOfferControllerV1.updateProductOffer(updateProductSelectionRequest);
 
         assertNotNull(response);
         assertNotNull(response.getStatusCode());
         assertEquals(204, response.getStatusCode().value());
 
-        verify(productOfferService, times(1)).updateProductOffer(any(ProductOfferDto.class));
+        verify(productOfferService, times(1)).updateProductOffer(any(UpdateProductSelectionRequest.class));
     }
 
     @Test
     void updateProductOffers() throws IOException {
-        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
-        var updateProductOffersRequest = new UpdateProductOffersRequest(List.of(productOfferDto));
+        var updateProductSelectionRequest = jsonTestUtils.loadObject(
+                "model/dto/v1/update_product_selection_request.json",
+                UpdateProductSelectionRequest.class);
+        var updateProductOffersRequest = new UpdateProductOffersRequest(List.of(updateProductSelectionRequest));
 
         var response = productOfferControllerV1.updateProductOffers(updateProductOffersRequest);
 
