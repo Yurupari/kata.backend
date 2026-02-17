@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -21,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,10 +42,32 @@ class ProductControllerV1Test extends BaseUnitTest {
 
     @Test
     void getProducts_Success() throws IOException {
-        var productDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
-        when(productService.getProducts()).thenReturn(List.of(productDto));
+        var pageable = PageRequest.of(0, 10);
+        var product = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var productList = List.of(product);
+        var productPage = new PageImpl<>(productList, pageable, productList.size());
 
-        var response = productControllerV1.getProducts();
+        when(productService.getProducts(pageable)).thenReturn(productPage);
+
+        var response = productControllerV1.getProducts(pageable);
+
+        assertNotNull(response);
+        assertNotNull(response.getStatusCode());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().isEmpty());
+    }
+
+    @Test
+    void searchProducts_Success() throws IOException {
+        var pageable = PageRequest.of(0, 10);
+        var product = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+        var productList = List.of(product);
+        var productPage = new PageImpl<>(productList, pageable, productList.size());
+
+        when(productService.searchProducts(any(), eq(pageable))).thenReturn(productPage);
+
+        var response = productControllerV1.searchProducts("PpL", pageable);
 
         assertNotNull(response);
         assertNotNull(response.getStatusCode());
@@ -54,6 +79,7 @@ class ProductControllerV1Test extends BaseUnitTest {
     @Test
     void getProduct_Success() throws IOException {
         var productDto = jsonTestUtils.loadObject("model/dto/v1/product_dto.json", ProductDto.class);
+
         when(productService.getProduct(any())).thenReturn(productDto);
 
         var response = productControllerV1.getProduct(1L);

@@ -62,7 +62,13 @@ class KataApplicationTests {
 
 	@Test
 	void getProducts_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/product/products"))
+		mockMvc.perform(get("/api/kata/v1/product/products?page=0&size=10&sort=desc"))
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void searchProducts_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/product/products/search?searchQuery=PpL&page=0&size=10&sort=desc"))
 				.andExpect(status().is2xxSuccessful());
 	}
 
