@@ -3,6 +3,7 @@ package com.haiilo.kata.backend.service.impl;
 import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
+import com.haiilo.kata.backend.model.enums.Status;
 import com.haiilo.kata.backend.model.mapper.CartItemMapper;
 import com.haiilo.kata.backend.repository.CartItemRepository;
 import com.haiilo.kata.backend.service.CartItemService;
@@ -50,6 +51,7 @@ public class CartItemServiceImpl implements CartItemService {
         validateCartItem(cartItemDto, false);
 
         return cartItemRepository.findByCartIdAndProductId(cartItemDto.cartId(), cartItemDto.productId()).stream()
+                .filter(cartItem -> Status.ACTIVE.equals(cartItem.getStatus()))
                 .findAny()
                 .map(cartItem -> {
                     cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
