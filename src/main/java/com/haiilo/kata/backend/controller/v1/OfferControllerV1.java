@@ -8,7 +8,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +34,17 @@ public class OfferControllerV1 {
 
     @Autowired
     private OfferMapper offerMapper;
+
+    @Operation(summary = "Get offers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved offers")
+    })
+    @GetMapping("/offers")
+    public ResponseEntity<Page<OfferDto>> getOffers(@ParameterObject Pageable pageable) {
+        var offers = offerService.getOffers(pageable);
+
+        return ResponseEntity.ok(offers);
+    }
 
     @Operation(summary = "Get offer by ID")
     @ApiResponses(value = {

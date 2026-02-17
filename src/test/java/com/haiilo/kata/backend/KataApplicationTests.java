@@ -95,6 +95,12 @@ class KataApplicationTests {
 	}
 
 	@Test
+	void getOffers_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/offer/offers?page=0&size=10&sort=desc"))
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
 	void getOffer_Success() throws Exception {
 		mockMvc.perform(get("/api/kata/v1/offer/1"))
 				.andExpect(status().is2xxSuccessful());

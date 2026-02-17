@@ -12,11 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,6 +51,23 @@ class OfferControllerV1Test extends BaseUnitTest {
 
         ReflectionTestUtils.setField(offerControllerV1, "offerService", offerService);
         ReflectionTestUtils.setField(offerControllerV1, "offerMapper", offerMapper);
+    }
+
+    @Test
+    void getOffers_Success() throws IOException {
+        var pageable = PageRequest.of(0, 10);
+        var offerDto = jsonTestUtils.loadObject("model/dto/v1/offer_dto.json", OfferDto.class);
+        var offerDtoList = List.of(offerDto);
+        var offerDtoPage = new PageImpl<>(offerDtoList, pageable, offerDtoList.size());
+
+        when(offerService.getOffers(pageable)).thenReturn(offerDtoPage);
+
+        var response = offerControllerV1.getOffers(pageable);
+
+        assertNotNull(response);
+        assertNotNull(response.getStatusCode());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(response.getBody());
     }
 
     @Test
