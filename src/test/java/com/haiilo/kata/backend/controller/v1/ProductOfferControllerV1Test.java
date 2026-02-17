@@ -35,6 +35,19 @@ class ProductOfferControllerV1Test extends BaseUnitTest {
     private ProductOfferMapper productOfferMapper = new ProductOfferMapperImpl();
 
     @Test
+    void getProductOffers_Success() throws IOException {
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
+
+        when(productOfferService.getProductOffers(any(), any())).thenReturn(List.of(productOfferDto));
+
+        var response = productOfferControllerV1.getProductOffers(1L, 1L);
+
+        assertNotNull(response);
+        assertNotNull(response.getStatusCode());
+        assertEquals(200, response.getStatusCode().value());
+    }
+
+    @Test
     void addProductOffer_Success() throws IOException {
         var productOfferDto = jsonTestUtils.loadObject("model/request/v1/new_product_offer_request.json", ProductSelectionRequest.class);
         var newProductOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);

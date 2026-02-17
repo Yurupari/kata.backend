@@ -158,6 +158,12 @@ class KataApplicationTests {
 	}
 
 	@Test
+	void getProductOffers_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/product/offer?productId=1&offerId=1"))
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
 	void addProductOffer_Success() throws Exception {
 		var request = jsonTestUtils.loadRequest("model/request/v1/new_product_offer_request.json");
 

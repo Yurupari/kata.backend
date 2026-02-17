@@ -12,10 +12,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,6 +28,23 @@ public class ProductOfferControllerV1 {
 
     @Autowired
     private ProductOfferService productOfferService;
+
+    @Operation(summary = "Get product's offers by offer ID or product ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the product's offers"),
+            @ApiResponse(responseCode = "400", description = "Invalid product ID or offer ID provided")
+    })
+    @GetMapping
+    public ResponseEntity<List<ProductOfferDto>> getProductOffers(
+            @RequestParam(required = false) Long productId,
+            @RequestParam(required = false) Long offerId
+    ) {
+        var productOfferDtos = productOfferService.getProductOffers(productId, offerId);
+
+        return ResponseEntity.ok(productOfferDtos);
+    }
+
+
     
     @Operation(summary = "Add product's offer")
     @ApiResponses(value = {
