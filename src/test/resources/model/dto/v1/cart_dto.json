@@ -1,0 +1,16 @@
+{
+  "id": 1,
+  "cartStatus": "OPEN",
+  "items": [
+    {
+      "id": 1,
+      "cartId": 1,
+      "productId": 1,
+      "productName": "Apple",
+      "unitPrice": 0.45,
+      "currency": "EUR",
+      "quantity": 2,
+      "status": "ACTIVE"
+    }
+  ]
+}

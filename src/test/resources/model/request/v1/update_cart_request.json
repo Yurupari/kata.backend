@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "cartStatus": "PROCESSED",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2
+    }
+  ]
+}

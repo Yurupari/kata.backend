@@ -1,0 +1,24 @@
+{
+  "id": 1,
+  "name": "Test offer",
+  "discount": 0.50,
+  "currency": "EUR",
+  "discountType": "FIXED_AMOUNT",
+  "fromDate": "14-02-2026T15:30:00",
+  "untilDate": "22-02-2026T15:30:00",
+  "status": "ACTIVE",
+  "products": [
+    {
+      "id": 101,
+      "productId": 1,
+      "quantity": 1,
+      "status": "ACTIVE"
+    },
+    {
+      "id": 102,
+      "productId": 2,
+      "quantity": 3,
+      "status": "ACTIVE"
+    }
+  ]
+}

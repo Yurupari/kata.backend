@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "cartId": 1,
+  "productId": 1,
+  "productName": "Apple",
+  "quantity": 3,
+  "status": "ACTIVE"
+}

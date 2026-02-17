@@ -1,0 +1,37 @@
+{
+  "id": 1,
+  "cart": {
+    "id": 1,
+    "cartStatus": "PROCESSED",
+    "createdAt": "14-02-2026T15:30:00",
+    "updatedAt": "14-02-2026T15:30:00"
+  },
+  "subTotal": 1.05,
+  "discount": 0.10,
+  "total": 0.95,
+  "currency": "EUR",
+  "transactionDetails": [
+    {
+      "productId": 1,
+      "productName": "Apple",
+      "quantity": 1,
+      "unitPrice": 0.45,
+      "appliedOffers": [
+        {
+          "description": "Test offer",
+          "discountAmount": 0.10,
+          "discountType": "FIXED_AMOUNT"
+        }
+      ],
+      "subtotal": 0.45
+    },
+    {
+      "productId": 2,
+      "productName": "Banana",
+      "quantity": 3,
+      "unitPrice": 0.20,
+      "subtotal": 0.60
+    }
+  ],
+  "createdAt": "14-02-2026T15:30:00"
+}

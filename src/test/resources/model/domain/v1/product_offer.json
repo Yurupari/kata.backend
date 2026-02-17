@@ -1,0 +1,22 @@
+{
+  "id": 1,
+  "product": {
+    "id": 1,
+    "name": "Apple",
+    "createdAt": "14-02-2026T15:30:00",
+    "updatedAt": "14-02-2026T15:30:00"
+  },
+  "offer": {
+    "id": 1,
+    "name": "Test offer",
+    "discount": 0.50,
+    "currency": "EUR",
+    "discountType": "FIXED_AMOUNT",
+    "createdAt": "14-02-2026T15:30:00",
+    "updatedAt": "14-02-2026T15:30:00"
+  },
+  "quantity": 1,
+  "status": "ACTIVE",
+  "createdAt": "14-02-2026T15:30:00",
+  "updatedAt": "14-02-2026T15:30:00"
+}
