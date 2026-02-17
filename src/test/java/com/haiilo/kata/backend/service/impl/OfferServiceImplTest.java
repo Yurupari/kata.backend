@@ -3,19 +3,16 @@ package com.haiilo.kata.backend.service.impl;
 import com.haiilo.kata.backend.BaseUnitTest;
 import com.haiilo.kata.backend.exception.OfferNotFoundException;
 import com.haiilo.kata.backend.model.dto.OfferDto;
+import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.entity.Offer;
 import com.haiilo.kata.backend.model.mapper.OfferMapper;
 import com.haiilo.kata.backend.model.mapper.OfferMapperImpl;
 import com.haiilo.kata.backend.repository.OfferRepository;
 import com.haiilo.kata.backend.service.ProductOfferService;
-import com.haiilo.kata.backend.utils.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -64,8 +61,10 @@ class OfferServiceImplTest extends BaseUnitTest {
     void addOffer_Success() throws IOException {
         var offerDto = jsonTestUtils.loadObject("model/request/v1/new_offer_request.json", OfferDto.class);
         var offer = jsonTestUtils.loadObject("model/domain/v1/offer.json", Offer.class);
+        var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
 
         when(offerRepository.save(any())).thenReturn(offer);
+        when(productOfferService.addProductOffer(any())).thenReturn(productOfferDto);
 
         var response = offerService.addOffer(offerDto);
 

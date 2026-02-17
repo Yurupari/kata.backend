@@ -18,6 +18,7 @@ import com.haiilo.kata.backend.service.CheckoutService;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import com.haiilo.kata.backend.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CheckoutServiceImpl implements CheckoutService {
 
     private final CartService cartService;
@@ -37,6 +39,7 @@ public class CheckoutServiceImpl implements CheckoutService {
 
     @Override
     public ReceiptDto executeCheckout(CheckoutRequest checkoutRequest) {
+        log.info("Execute checkout: cartId={}", checkoutRequest.cartId());
         var cartDto = cartService.getCart(checkoutRequest.cartId());
 
         validateCart(cartDto);
@@ -73,6 +76,8 @@ public class CheckoutServiceImpl implements CheckoutService {
             total = total.add(price.total());
         }
 
+        var currency = cartItems.getFirst().currency();
+
         var transactionDetails = generateTransactionDetails(prices, cartItems);
 
         return new ReceiptDto(
@@ -81,7 +86,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                 subTotal,
                 discount,
                 total,
-                cartDto.currency(),
+                currency,
                 transactionDetails
         );
     }
@@ -93,6 +98,7 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         var nowLocalDateTime = LocalDateTime.now();
 
+        log.info("Getting available offers: productId={}", cartItemDto.productId());
         var availableOfferDtos = productOfferService.getProductOffers(cartItemDto.productId(), null).stream()
                 .filter(offer -> {
                     var from = offer.offerDto().fromDate();
@@ -106,8 +112,11 @@ public class CheckoutServiceImpl implements CheckoutService {
                 .sorted(Comparator.comparing(ProductOfferDto::quantity).reversed())
                 .toList();
 
+        log.info("Calculating the price: availableOffers={}", availableOfferDtos.size());
         for (var productOfferDto : availableOfferDtos) {
             if (remainingQuantity >= productOfferDto.quantity()) {
+                log.info("Offer applicable: discountType={}", productOfferDto.offerDto().discountType());
+
                 int timesToApply = remainingQuantity / productOfferDto.quantity();
 
                 var offerPrice = calculatePrice(
@@ -164,6 +173,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     }
 
     private List<TransactionDetail> generateTransactionDetails(List<PriceDto> prices, List<CartItemDto> cartItems) {
+        log.info("Calculating transaction details");
         List<TransactionDetail> transactionDetails = new ArrayList<>();
 
         for (var cartItem : cartItems) {

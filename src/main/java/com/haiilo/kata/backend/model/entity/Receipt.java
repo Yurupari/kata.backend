@@ -1,6 +1,7 @@
 package com.haiilo.kata.backend.model.entity;
 
 import com.haiilo.kata.backend.model.json.TransactionDetail;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -52,7 +53,7 @@ public class Receipt {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 }

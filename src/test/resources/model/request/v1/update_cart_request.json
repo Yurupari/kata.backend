@@ -1,6 +1,6 @@
 {
   "id": 1,
-  "cart_status": "PROCESSED",
+  "cartStatus": "PROCESSED",
   "items": [
     {
       "productId": 1,

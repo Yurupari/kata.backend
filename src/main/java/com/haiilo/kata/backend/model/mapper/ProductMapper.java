@@ -7,9 +7,11 @@ import com.haiilo.kata.backend.model.http.request.CreateProductRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(
         componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         config = CentralMapperConfig.class,
         uses = {ProductOfferMapper.class}
 )

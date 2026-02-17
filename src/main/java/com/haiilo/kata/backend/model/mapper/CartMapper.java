@@ -6,9 +6,11 @@ import com.haiilo.kata.backend.model.entity.Cart;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(
         componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         config = CentralMapperConfig.class,
         uses = {CartItemMapper.class}
 )

@@ -8,12 +8,14 @@ import com.haiilo.kata.backend.model.mapper.CartMapper;
 import com.haiilo.kata.backend.repository.CartRepository;
 import com.haiilo.kata.backend.service.CartService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
@@ -41,7 +43,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public Cart getCartById(Long id) {
+        return cartRepository.findById(id)
+                .orElseThrow(() -> new CartNotFoundException(id));
+    }
+
+    @Override
     public void updateCart(CartDto cartDto) {
+        log.info("Update cart: {}", cartDto.toString());
         var existingCart = cartRepository.findById(cartDto.id())
                 .orElseThrow(() -> new CartNotFoundException(cartDto.id()));
 

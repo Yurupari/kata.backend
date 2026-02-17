@@ -14,6 +14,6 @@ public interface ReceiptMapper {
     @Mapping(target = "cartId", source = "cart.id")
     ReceiptDto toDto(Receipt entity);
 
-    @Mapping(target = "cart", ignore = true)
+    @Mapping(target = "cart.id", source = "cartId")
     Receipt toEntity(ReceiptDto dto);
 }

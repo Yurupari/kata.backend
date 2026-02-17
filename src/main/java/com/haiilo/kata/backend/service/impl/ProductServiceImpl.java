@@ -8,6 +8,7 @@ import com.haiilo.kata.backend.repository.ProductRepository;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import com.haiilo.kata.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -37,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto addProduct(ProductDto productDto) {
+        log.info("Create product: {}", productDto.toString());
         var product = productRepository.save(productMapper.toEntity(productDto));
 
         return productMapper.toDto(product);
@@ -44,6 +47,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProduct(ProductDto productDto) {
+        log.info("Update product: {}", productDto.toString());
         var existingProduct = productRepository.findById(productDto.id())
                         .orElseThrow(() -> new ProductNotFoundException(productDto.id()));
 
