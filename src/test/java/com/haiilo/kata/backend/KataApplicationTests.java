@@ -169,10 +169,32 @@ class KataApplicationTests {
 	}
 
 	@Test
+	void addProductOffers_Success() throws Exception {
+		var request = jsonTestUtils.loadRequest("model/request/v1/create_product_offer_request.json");
+
+		mockMvc.perform(post("/api/kata/v1/product/offer/multiple")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(request)
+				)
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
 	void updateProductOffer_Success() throws Exception {
 		var request = jsonTestUtils.loadRequest("model/dto/v1/fixed_amount_product_offer_dto.json");
 
 		mockMvc.perform(put("/api/kata/v1/product/offer")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(request)
+				)
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void updateProductOffers_Success() throws Exception {
+		var request = jsonTestUtils.loadRequest("model/dto/v1/update_product_offer_request.json");
+
+		mockMvc.perform(put("/api/kata/v1/product/offer/multiple")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)

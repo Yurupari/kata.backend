@@ -1,7 +1,9 @@
 package com.haiilo.kata.backend.controller.v1;
 
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
+import com.haiilo.kata.backend.model.http.request.CreateProductOffersRequest;
 import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
+import com.haiilo.kata.backend.model.http.request.UpdateProductOffersRequest;
 import com.haiilo.kata.backend.model.mapper.ProductOfferMapper;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,15 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/kata/v1/product/offer")
 public class ProductOfferControllerV1 {
 
     @Autowired
     private ProductOfferService productOfferService;
-
-    @Autowired
-    private ProductOfferMapper productOfferMapper;
     
     @Operation(summary = "Add product's offer")
     @ApiResponses(value = {
@@ -33,9 +34,21 @@ public class ProductOfferControllerV1 {
     })
     @PostMapping
     public ResponseEntity<ProductOfferDto> addProductOffer(@Valid @RequestBody ProductSelectionRequest productSelectionRequest) {
-        var newProductOfferDto = productOfferService.addProductOffer(productOfferMapper.toDto(productSelectionRequest));
+        var newProductOfferDto = productOfferService.addProductOffer(productSelectionRequest);
         
         return ResponseEntity.ok(newProductOfferDto);
+    }
+
+    @Operation(summary = "Add several product's offers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully created the product's offers"),
+            @ApiResponse(responseCode = "400", description = "Invalid data provided")
+    })
+    @PostMapping("/multiple")
+    public ResponseEntity<List<ProductOfferDto>> addProductOffers(@Valid @RequestBody CreateProductOffersRequest createProductOffersRequest) {
+        var productOfferDtos = productOfferService.addProductOffers(createProductOffersRequest);
+
+        return ResponseEntity.ok(productOfferDtos);
     }
 
     @Operation(summary = "Update product's offer")
@@ -47,6 +60,18 @@ public class ProductOfferControllerV1 {
     @PutMapping
     public ResponseEntity<Void> updateProductOffer(@Valid @RequestBody ProductOfferDto productOfferDto) {
         productOfferService.updateProductOffer(productOfferDto);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Update several product's offers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Successfully updated the product's offers"),
+            @ApiResponse(responseCode = "400", description = "Invalid data provided")
+    })
+    @PutMapping("/multiple")
+    public ResponseEntity<Void> updateProductOffers(@Valid @RequestBody UpdateProductOffersRequest updateProductOffersRequest) {
+        productOfferService.updateProductOffers(updateProductOffersRequest);
 
         return ResponseEntity.noContent().build();
     }

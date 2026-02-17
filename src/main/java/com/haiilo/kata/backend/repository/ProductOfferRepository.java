@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ProductOfferRepository extends JpaRepository<ProductOffer, Long> {
+    List<ProductOffer> findByIdIn(List<Long> ids);
+
     @Query("""
        SELECT po FROM ProductOffer po
        WHERE (:productId IS NULL OR po.product.id = :productId)

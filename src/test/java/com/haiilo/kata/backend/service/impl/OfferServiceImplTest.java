@@ -83,13 +83,13 @@ class OfferServiceImplTest extends BaseUnitTest {
         var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
 
         when(offerRepository.save(any())).thenReturn(offer);
-        when(productOfferService.addProductOffer(any())).thenReturn(productOfferDto);
+        when(productOfferService.addProductOffers(any())).thenReturn(List.of(productOfferDto));
 
         var response = offerService.addOffer(offerDto);
 
         assertNotNull(response);
 
-        verify(productOfferService, times(1)).addProductOffer(any());
+        verify(productOfferService, times(1)).addProductOffers(any());
     }
 
     @Test

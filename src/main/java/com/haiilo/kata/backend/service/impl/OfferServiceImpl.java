@@ -3,6 +3,8 @@ package com.haiilo.kata.backend.service.impl;
 import com.haiilo.kata.backend.exception.OfferNotFoundException;
 import com.haiilo.kata.backend.model.dto.OfferDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
+import com.haiilo.kata.backend.model.http.request.CreateProductOffersRequest;
+import com.haiilo.kata.backend.model.http.request.ProductSelectionRequest;
 import com.haiilo.kata.backend.model.mapper.OfferMapper;
 import com.haiilo.kata.backend.repository.OfferRepository;
 import com.haiilo.kata.backend.service.OfferService;
@@ -62,15 +64,15 @@ public class OfferServiceImpl implements OfferService {
         var offer = offerRepository.save(offerMapper.toEntity(newOfferDto));
 
         log.info("Creating product offers: productOffers={}", offerDto.products().size());
-        var productOffers = offerDto.products().stream()
-                .map(po -> new ProductOfferDto(
-                        null,
+        var productSelectionRequests = offerDto.products().stream()
+                .map(po -> new ProductSelectionRequest(
                         po.productId(),
-                        offerMapper.toDto(offer),
-                        po.quantity(),
-                        null))
-                .map(productOfferService::addProductOffer)
+                        offer.getId(),
+                        po.quantity()
+                ))
                 .toList();
+
+        var productOffers = productOfferService.addProductOffers(new CreateProductOffersRequest(productSelectionRequests));
 
         return offerMapper.toDto(offer, productOffers);
     }
