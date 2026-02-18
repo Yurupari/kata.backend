@@ -42,6 +42,17 @@ class ReceiptServiceImplTest extends BaseUnitTest {
     private final CartMapper cartMapper = new CartMapperImpl();
 
     @Test
+    void getReceipts_Success() throws IOException {
+        var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
+
+        when(receiptRepository.findAll()).thenReturn(List.of(receipt));
+
+        var response = receiptService.getReceipts();
+
+        assertNotNull(response);
+    }
+
+    @Test
     void getReceipt_Success() throws IOException {
         var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
 

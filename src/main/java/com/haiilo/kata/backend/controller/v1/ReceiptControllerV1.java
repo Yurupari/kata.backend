@@ -12,12 +12,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/kata/v1/receipt")
 public class ReceiptControllerV1 {
 
     @Autowired
     private ReceiptService receiptService;
+
+    @Operation(summary = "Get all the receipts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the receipts")
+    })
+    @GetMapping("/receipts")
+    public ResponseEntity<List<ReceiptDto>> getReceipts() {
+        var receiptDto = receiptService.getReceipts();
+
+        return ResponseEntity.ok(receiptDto);
+    }
 
     @Operation(summary = "Get receipt by ID")
     @ApiResponses(value = {

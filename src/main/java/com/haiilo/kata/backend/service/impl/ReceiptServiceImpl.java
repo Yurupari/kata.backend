@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -22,6 +24,15 @@ public class ReceiptServiceImpl implements ReceiptService {
     private final ReceiptMapper receiptMapper;
 
     private final CartService cartService;
+
+    @Override
+    public List<ReceiptDto> getReceipts() {
+        var receipts = receiptRepository.findAll();
+
+        return receipts.stream()
+                .map(receiptMapper::toDto)
+                .toList();
+    }
 
     @Override
     public ReceiptDto getReceipt(Long id, Long cartId) {

@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,6 +22,20 @@ class ReceiptControllerV1Test extends BaseUnitTest {
 
     @Mock
     private ReceiptService receiptService;
+
+    @Test
+    void getReceipts_Success() throws IOException {
+        var receiptDto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+
+        when(receiptService.getReceipts()).thenReturn(List.of(receiptDto));
+
+        var response = receiptControllerV1.getReceipts();
+
+        assertNotNull(response);
+        assertNotNull(response.getStatusCode());
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+    }
 
     @Test
     void getReceipt_Success() throws IOException {
