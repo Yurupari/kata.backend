@@ -9,6 +9,7 @@ public record CartItemDto(
         Long cartId,
         Long productId,
         String productName,
+        Status productStatus,
         BigDecimal unitPrice,
         String currency,
         Integer quantity,

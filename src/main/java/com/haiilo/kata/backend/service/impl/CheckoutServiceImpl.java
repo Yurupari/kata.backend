@@ -1,6 +1,6 @@
 package com.haiilo.kata.backend.service.impl;
 
-import com.haiilo.kata.backend.exception.CartConflictStatusException;
+import com.haiilo.kata.backend.exception.CheckoutProcessException;
 import com.haiilo.kata.backend.exception.CheckoutException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
@@ -42,8 +42,6 @@ public class CheckoutServiceImpl implements CheckoutService {
         log.info("Execute checkout: cartId={}", checkoutRequest.cartId());
         var cartDto = cartService.getCart(checkoutRequest.cartId());
 
-        validateCart(cartDto);
-
         var receiptDto = generateReceipt(cartDto);
 
         processCart(cartDto);
@@ -51,16 +49,24 @@ public class CheckoutServiceImpl implements CheckoutService {
         return receiptService.addReceipt(receiptDto);
     }
 
-    private void validateCart(CartDto cartDto) {
+    private void validateCart(CartDto cartDto, List<CartItemDto> filteredCartItems) {
         if (!CartStatus.PENDING.equals(cartDto.cartStatus())) {
-            throw new CartConflictStatusException(cartDto.cartStatus());
+            throw new CheckoutProcessException(String.format("With the current status of the cart is not possible to continue: %s", cartDto.cartStatus()));
+        }
+
+        if (filteredCartItems.isEmpty()) {
+            throw new CheckoutProcessException("Cart is empty or with not active products");
         }
     }
 
     private ReceiptDto generateReceipt(CartDto cartDto) {
         var cartItems = cartDto.items().stream()
-                .filter(item -> Status.ACTIVE.equals(item.status()))
+                .filter(item ->
+                        Status.ACTIVE.equals(item.status())
+                        && Status.ACTIVE.equals(item.productStatus()))
                 .toList();
+
+        validateCart(cartDto, cartItems);
 
         var prices = cartItems.stream()
                 .map(this::calculateBestProductPrice)

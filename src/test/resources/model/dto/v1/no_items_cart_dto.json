@@ -7,7 +7,7 @@
       "cartId": 1,
       "productId": 1,
       "productName": "Apple",
-      "productStatus": "ACTIVE",
+      "productStatus": "INACTIVE",
       "unitPrice": 0.45,
       "currency": "EUR",
       "quantity": 2,

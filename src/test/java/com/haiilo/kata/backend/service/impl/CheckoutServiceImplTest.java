@@ -1,7 +1,7 @@
 package com.haiilo.kata.backend.service.impl;
 
 import com.haiilo.kata.backend.BaseUnitTest;
-import com.haiilo.kata.backend.exception.CartConflictStatusException;
+import com.haiilo.kata.backend.exception.CheckoutProcessException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
@@ -98,6 +98,16 @@ class CheckoutServiceImplTest extends BaseUnitTest {
 
         when(cartService.getCart(any())).thenReturn(cartDto);
 
-        assertThrows(CartConflictStatusException.class, () -> checkoutService.executeCheckout(checkoutRequest));
+        assertThrows(CheckoutProcessException.class, () -> checkoutService.executeCheckout(checkoutRequest));
+    }
+
+    @Test
+    void executeCheckout_CartWithNoActiveProducts_Conflict() throws IOException {
+        var checkoutRequest = new CheckoutRequest(1L);
+        var cartDto = jsonTestUtils.loadObject("model/dto/v1/no_items_cart_dto.json", CartDto.class);
+
+        when(cartService.getCart(any())).thenReturn(cartDto);
+
+        assertThrows(CheckoutProcessException.class, () -> checkoutService.executeCheckout(checkoutRequest));
     }
 }
