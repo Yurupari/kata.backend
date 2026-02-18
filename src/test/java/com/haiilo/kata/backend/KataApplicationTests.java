@@ -208,6 +208,12 @@ class KataApplicationTests {
 	}
 
 	@Test
+	void precalculatePrice_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/checkout/precalculate/3"))
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
 	void executeCheckout_Success() throws Exception {
 		var request = jsonTestUtils.loadRequest("model/request/v1/checkout_request.json");
 		var receiptDto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);

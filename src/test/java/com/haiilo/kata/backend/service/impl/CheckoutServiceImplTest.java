@@ -5,11 +5,16 @@ import com.haiilo.kata.backend.exception.CheckoutProcessException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.ProductOfferDto;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
+import com.haiilo.kata.backend.model.enums.CartStatus;
 import com.haiilo.kata.backend.model.http.request.CheckoutRequest;
 import com.haiilo.kata.backend.service.CartService;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import com.haiilo.kata.backend.service.ReceiptService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -19,6 +24,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,77 +45,45 @@ class CheckoutServiceImplTest extends BaseUnitTest {
     @Mock
     private ReceiptService receiptService;
 
-    @Test
-    void executeCheckout_FixedAmount_Success() throws IOException {
-        var checkoutRequest = new CheckoutRequest(1L);
-        var cartDto = jsonTestUtils.loadObject("model/dto/v1/pending_cart_dto.json", CartDto.class);
-        var product_offer_dto = List.of(jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class));
-        var receipt_dto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+    private CheckoutRequest request;
+    private CartDto pendingCart;
 
-        when(cartService.getCart(any())).thenReturn(cartDto);
-        when(productOfferService.getProductOffers(any(), any())).thenReturn(product_offer_dto);
-        when(receiptService.addReceipt(any())).thenReturn(receipt_dto);
+    @BeforeEach
+    void setUp() throws IOException {
+        request = new CheckoutRequest(1L);
+        pendingCart = jsonTestUtils.loadObject("model/dto/v1/pending_cart_dto.json", CartDto.class);
 
-        var response = checkoutService.executeCheckout(checkoutRequest);
-
-        assertNotNull(response);
-
-        verify(cartService, times(1)).updateCart(any(CartDto.class));
+        lenient().when(cartService.getCart(any())).thenReturn(pendingCart);
     }
 
-    @Test
-    void executeCheckout_Percentage_Success() throws IOException {
-        var checkoutRequest = new CheckoutRequest(1L);
-        var cartDto = jsonTestUtils.loadObject("model/dto/v1/pending_cart_dto.json", CartDto.class);
-        var product_offer_dto = List.of(jsonTestUtils.loadObject("model/dto/v1/percentage_product_offer_dto.json", ProductOfferDto.class));
-        var receipt_dto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "model/dto/v1/fixed_amount_product_offer_dto.json",
+            "model/dto/v1/percentage_product_offer_dto.json",
+            "model/dto/v1/not_available_product_offer_dto.json"
+    })
+    void checkoutFlow_VariousOffers_Success(String offerJsonPath) throws IOException {
+        var offers = List.of(jsonTestUtils.loadObject(offerJsonPath, ProductOfferDto.class));
+        when(productOfferService.getProductOffers(any(), any())).thenReturn(offers);
+        when(receiptService.addReceipt(any())).thenReturn(mock(ReceiptDto.class));
 
-        when(cartService.getCart(any())).thenReturn(cartDto);
-        when(productOfferService.getProductOffers(any(), any())).thenReturn(product_offer_dto);
-        when(receiptService.addReceipt(any())).thenReturn(receipt_dto);
+        assertNotNull(checkoutService.precalculatePrice(1L));
 
-        var response = checkoutService.executeCheckout(checkoutRequest);
+        var receipt = checkoutService.executeCheckout(request);
+        assertNotNull(receipt);
 
-        assertNotNull(response);
-
-        verify(cartService, times(1)).updateCart(any(CartDto.class));
+        verify(cartService).updateCart(argThat(cart -> cart.cartStatus() == CartStatus.PROCESSED));
     }
 
-    @Test
-    void executeCheckout_NotOffersAvailable_Success() throws IOException {
-        var checkoutRequest = new CheckoutRequest(1L);
-        var cartDto = jsonTestUtils.loadObject("model/dto/v1/pending_cart_dto.json", CartDto.class);
-        var product_offer_dto = List.of(jsonTestUtils.loadObject("model/dto/v1/not_available_product_offer_dto.json", ProductOfferDto.class));
-        var receipt_dto = jsonTestUtils.loadObject("model/dto/v1/receipt_dto.json", ReceiptDto.class);
+    @ParameterizedTest
+    @CsvSource({
+            "model/dto/v1/cart_dto.json",
+            "model/dto/v1/no_items_cart_dto.json"
+    })
+    void checkoutFlow_Conflicts(String cartJsonPath) throws IOException {
+        var invalidCart = jsonTestUtils.loadObject(cartJsonPath, CartDto.class);
+        when(cartService.getCart(any())).thenReturn(invalidCart);
 
-        when(cartService.getCart(any())).thenReturn(cartDto);
-        when(productOfferService.getProductOffers(any(), any())).thenReturn(product_offer_dto);
-        when(receiptService.addReceipt(any())).thenReturn(receipt_dto);
-
-        var response = checkoutService.executeCheckout(checkoutRequest);
-
-        assertNotNull(response);
-
-        verify(cartService, times(1)).updateCart(any(CartDto.class));
-    }
-
-    @Test
-    void executeCheckout_CartIsNotPending_Conflict() throws IOException {
-        var checkoutRequest = new CheckoutRequest(1L);
-        var cartDto = jsonTestUtils.loadObject("model/dto/v1/cart_dto.json", CartDto.class);
-
-        when(cartService.getCart(any())).thenReturn(cartDto);
-
-        assertThrows(CheckoutProcessException.class, () -> checkoutService.executeCheckout(checkoutRequest));
-    }
-
-    @Test
-    void executeCheckout_CartWithNoActiveProducts_Conflict() throws IOException {
-        var checkoutRequest = new CheckoutRequest(1L);
-        var cartDto = jsonTestUtils.loadObject("model/dto/v1/no_items_cart_dto.json", CartDto.class);
-
-        when(cartService.getCart(any())).thenReturn(cartDto);
-
-        assertThrows(CheckoutProcessException.class, () -> checkoutService.executeCheckout(checkoutRequest));
+        assertThrows(CheckoutProcessException.class, () -> checkoutService.executeCheckout(request));
     }
 }
