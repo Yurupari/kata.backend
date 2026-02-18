@@ -5,6 +5,7 @@ import com.haiilo.kata.backend.exception.ReceiptNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
+import com.haiilo.kata.backend.model.entity.Offer;
 import com.haiilo.kata.backend.model.entity.Receipt;
 import com.haiilo.kata.backend.model.mapper.CartMapper;
 import com.haiilo.kata.backend.model.mapper.CartMapperImpl;
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,11 +46,14 @@ class ReceiptServiceImplTest extends BaseUnitTest {
 
     @Test
     void getReceipts_Success() throws IOException {
+        var pageable = PageRequest.of(0, 10);
         var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
+        var receiptList = List.of(receipt);
+        var receiptPage = new PageImpl<>(receiptList, pageable, receiptList.size());
 
-        when(receiptRepository.findAll()).thenReturn(List.of(receipt));
+        when(receiptRepository.findAll(pageable)).thenReturn(receiptPage);
 
-        var response = receiptService.getReceipts();
+        var response = receiptService.getReceipts(pageable);
 
         assertNotNull(response);
     }
