@@ -1,6 +1,6 @@
 package com.haiilo.kata.backend.service.impl;
 
-import com.haiilo.kata.backend.exception.CartConflictStatusException;
+import com.haiilo.kata.backend.exception.CheckoutProcessException;
 import com.haiilo.kata.backend.exception.CheckoutException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
@@ -38,11 +38,29 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final ReceiptService receiptService;
 
     @Override
+    public PriceDto precalculatePrice(Long cartId) {
+        log.info("Precalculate price: cartId={}", cartId);
+
+        var cartDto = cartService.getCart(cartId);
+
+        var filteredCartItems = cartDto.items().stream()
+                .filter(item ->
+                        Status.ACTIVE.equals(item.status())
+                                && Status.ACTIVE.equals(item.productStatus()))
+                .toList();
+
+        var prices = filteredCartItems.stream()
+                .map(this::calculateBestProductPrice)
+                .toList();
+
+        return sumPrices(prices);
+    }
+
+    @Override
     public ReceiptDto executeCheckout(CheckoutRequest checkoutRequest) {
         log.info("Execute checkout: cartId={}", checkoutRequest.cartId());
-        var cartDto = cartService.getCart(checkoutRequest.cartId());
 
-        validateCart(cartDto);
+        var cartDto = cartService.getCart(checkoutRequest.cartId());
 
         var receiptDto = generateReceipt(cartDto);
 
@@ -51,21 +69,53 @@ public class CheckoutServiceImpl implements CheckoutService {
         return receiptService.addReceipt(receiptDto);
     }
 
-    private void validateCart(CartDto cartDto) {
+    private void validateCart(CartDto cartDto, List<CartItemDto> filteredCartItems) {
         if (!CartStatus.PENDING.equals(cartDto.cartStatus())) {
-            throw new CartConflictStatusException(cartDto.cartStatus());
+            throw new CheckoutProcessException(String.format("With the current status of the cart is not possible to continue: %s", cartDto.cartStatus()));
+        }
+
+        if (filteredCartItems.isEmpty()) {
+            throw new CheckoutProcessException("Cart is empty or with not active products");
         }
     }
 
     private ReceiptDto generateReceipt(CartDto cartDto) {
-        var cartItems = cartDto.items().stream()
-                .filter(item -> Status.ACTIVE.equals(item.status()))
-                .toList();
+        var validatedCartItems = getValidatedCartItems(cartDto);
 
-        var prices = cartItems.stream()
+        var prices = validatedCartItems.stream()
                 .map(this::calculateBestProductPrice)
                 .toList();
 
+        var totals = sumPrices(prices);
+
+        var currency = validatedCartItems.getFirst().currency();
+
+        var transactionDetails = generateTransactionDetails(prices, validatedCartItems);
+
+        return new ReceiptDto(
+                null,
+                cartDto.id(),
+                totals.subTotal(),
+                totals.discount(),
+                totals.total(),
+                currency,
+                transactionDetails
+        );
+    }
+
+    private List<CartItemDto> getValidatedCartItems(CartDto cartDto) {
+        var cartItems = cartDto.items().stream()
+                .filter(item ->
+                        Status.ACTIVE.equals(item.status())
+                                && Status.ACTIVE.equals(item.productStatus()))
+                .toList();
+
+        validateCart(cartDto, cartItems);
+
+        return cartItems;
+    }
+
+    private PriceDto sumPrices(List<PriceDto> prices) {
         var subTotal = BigDecimal.ZERO;
         var discount = BigDecimal.ZERO;
         var total = BigDecimal.ZERO;
@@ -76,18 +126,13 @@ public class CheckoutServiceImpl implements CheckoutService {
             total = total.add(price.total());
         }
 
-        var currency = cartItems.getFirst().currency();
-
-        var transactionDetails = generateTransactionDetails(prices, cartItems);
-
-        return new ReceiptDto(
+        return new PriceDto(
                 null,
-                cartDto.id(),
+                null,
+                null,
                 subTotal,
-                discount,
                 total,
-                currency,
-                transactionDetails
+                discount
         );
     }
 

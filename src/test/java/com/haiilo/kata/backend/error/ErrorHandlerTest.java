@@ -1,7 +1,7 @@
 package com.haiilo.kata.backend.error;
 
 import com.haiilo.kata.backend.BaseUnitTest;
-import com.haiilo.kata.backend.exception.CartConflictStatusException;
+import com.haiilo.kata.backend.exception.CheckoutProcessException;
 import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.exception.CartNotFoundException;
 import com.haiilo.kata.backend.exception.CheckoutException;
@@ -96,8 +96,8 @@ class ErrorHandlerTest extends BaseUnitTest {
     }
 
     @Test
-    void handleCartConflictStatusException() {
-        var response = errorHandler.handleCartConflictStatusException(new CartConflictStatusException(CartStatus.OPEN));
+    void handleCheckoutProcessException() {
+        var response = errorHandler.handleCheckoutProcessException(new CheckoutProcessException("Something wrong during checkout"));
 
         assertNotNull(response);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());

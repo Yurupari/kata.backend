@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +64,7 @@ class CartServiceImplTest extends BaseUnitTest {
         var cart = jsonTestUtils.loadObject("model/domain/v1/cart.json", Cart.class);
 
         when(cartRepository.findByCartStatusIn(List.of(CartStatus.OPEN, CartStatus.PENDING)))
-                .thenReturn(new ArrayList<>());
+                .thenReturn(List.of());
         when(cartRepository.save(any())).thenReturn(cart);
 
         var response = cartService.getCurrentCart();

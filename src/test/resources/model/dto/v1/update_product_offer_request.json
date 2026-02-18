@@ -1,0 +1,11 @@
+{
+  "productOffers": [
+    {
+      "id": 1,
+      "productId": 1,
+      "offerId": 1,
+      "quantity": 2,
+      "status": "ACTIVE"
+    }
+  ]
+}

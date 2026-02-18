@@ -14,6 +14,6 @@ public record CreateOfferRequest(
         DiscountType discountType,
         @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") LocalDateTime fromDate,
         @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss") LocalDateTime untilDate,
-        List<ProductSelectionRequest> products
+        List<CreateProductSelectionRequest> products
 ) {
 }

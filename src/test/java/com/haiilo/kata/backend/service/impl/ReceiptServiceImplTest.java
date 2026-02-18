@@ -5,6 +5,7 @@ import com.haiilo.kata.backend.exception.ReceiptNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.CartDto;
 import com.haiilo.kata.backend.model.dto.ReceiptDto;
+import com.haiilo.kata.backend.model.entity.Offer;
 import com.haiilo.kata.backend.model.entity.Receipt;
 import com.haiilo.kata.backend.model.mapper.CartMapper;
 import com.haiilo.kata.backend.model.mapper.CartMapperImpl;
@@ -16,9 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,6 +43,20 @@ class ReceiptServiceImplTest extends BaseUnitTest {
     private ReceiptMapper receiptMapper = new ReceiptMapperImpl();
 
     private final CartMapper cartMapper = new CartMapperImpl();
+
+    @Test
+    void getReceipts_Success() throws IOException {
+        var pageable = PageRequest.of(0, 10);
+        var receipt = jsonTestUtils.loadObject("model/domain/v1/receipt.json", Receipt.class);
+        var receiptList = List.of(receipt);
+        var receiptPage = new PageImpl<>(receiptList, pageable, receiptList.size());
+
+        when(receiptRepository.findAll(pageable)).thenReturn(receiptPage);
+
+        var response = receiptService.getReceipts(pageable);
+
+        assertNotNull(response);
+    }
 
     @Test
     void getReceipt_Success() throws IOException {
@@ -82,7 +98,7 @@ class ReceiptServiceImplTest extends BaseUnitTest {
 
     @Test
     void getReceipt_NotFound() throws IOException {
-        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(new ArrayList<>());
+        when(receiptRepository.findByIdOrCartId(any(), any())).thenReturn(List.of());
 
         assertThrows(ReceiptNotFoundException.class, () -> receiptService.getReceipt(1L, 1L));
     }

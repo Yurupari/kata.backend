@@ -2,17 +2,18 @@ package com.haiilo.kata.backend.service.impl;
 
 import com.haiilo.kata.backend.exception.OfferNotFoundException;
 import com.haiilo.kata.backend.model.dto.OfferDto;
-import com.haiilo.kata.backend.model.dto.ProductOfferDto;
+import com.haiilo.kata.backend.model.http.request.CreateProductOffersRequest;
+import com.haiilo.kata.backend.model.http.request.CreateProductSelectionRequest;
 import com.haiilo.kata.backend.model.mapper.OfferMapper;
 import com.haiilo.kata.backend.repository.OfferRepository;
 import com.haiilo.kata.backend.service.OfferService;
 import com.haiilo.kata.backend.service.ProductOfferService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,13 @@ public class OfferServiceImpl implements OfferService {
     private final OfferMapper offerMapper;
 
     private final ProductOfferService productOfferService;
+
+    @Override
+    public Page<OfferDto> getOffers(Pageable pageable) {
+        var offerPage = offerRepository.findAll(pageable);
+
+        return offerPage.map(offerMapper::toDto);
+    }
 
     @Override
     public OfferDto getOffer(Long id) {
@@ -53,15 +61,15 @@ public class OfferServiceImpl implements OfferService {
         var offer = offerRepository.save(offerMapper.toEntity(newOfferDto));
 
         log.info("Creating product offers: productOffers={}", offerDto.products().size());
-        var productOffers = offerDto.products().stream()
-                .map(po -> new ProductOfferDto(
-                        null,
+        var productSelectionRequests = offerDto.products().stream()
+                .map(po -> new CreateProductSelectionRequest(
                         po.productId(),
-                        offerMapper.toDto(offer),
-                        po.quantity(),
-                        null))
-                .map(productOfferService::addProductOffer)
+                        offer.getId(),
+                        po.quantity()
+                ))
                 .toList();
+
+        var productOffers = productOfferService.addProductOffers(new CreateProductOffersRequest(productSelectionRequests));
 
         return offerMapper.toDto(offer, productOffers);
     }

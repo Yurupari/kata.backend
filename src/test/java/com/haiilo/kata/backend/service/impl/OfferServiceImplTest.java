@@ -13,11 +13,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +42,21 @@ class OfferServiceImplTest extends BaseUnitTest {
 
     @Spy
     private OfferMapper offerMapper = new OfferMapperImpl();
+
+    @Test
+    void getOffers_Success() throws IOException {
+        var pageable = PageRequest.of(0, 10);
+        var offer = jsonTestUtils.loadObject("model/domain/v1/offer.json", Offer.class);
+        var offerList = List.of(offer);
+        var offerPage = new PageImpl<>(offerList, pageable, offerList.size());
+
+        when(offerRepository.findAll(pageable)).thenReturn(offerPage);
+
+        var response = offerService.getOffers(pageable);
+
+        assertNotNull(response);
+        assertEquals(1, response.getTotalElements());
+    }
 
     @Test
     void getOffer_Success() throws IOException {
@@ -64,13 +83,13 @@ class OfferServiceImplTest extends BaseUnitTest {
         var productOfferDto = jsonTestUtils.loadObject("model/dto/v1/fixed_amount_product_offer_dto.json", ProductOfferDto.class);
 
         when(offerRepository.save(any())).thenReturn(offer);
-        when(productOfferService.addProductOffer(any())).thenReturn(productOfferDto);
+        when(productOfferService.addProductOffers(any())).thenReturn(List.of(productOfferDto));
 
         var response = offerService.addOffer(offerDto);
 
         assertNotNull(response);
 
-        verify(productOfferService, times(1)).addProductOffer(any());
+        verify(productOfferService, times(1)).addProductOffers(any());
     }
 
     @Test

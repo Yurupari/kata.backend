@@ -13,9 +13,11 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,11 +70,27 @@ class CartItemServiceImplTest extends BaseUnitTest {
         var cartItemDto = jsonTestUtils.loadObject("model/request/v1/new_cart_item_request.json", CartItemDto.class);
         var cartItem = jsonTestUtils.loadObject("model/domain/v1/cart_item.json", CartItem.class);
 
+        when(cartItemRepository.findByCartIdAndProductId(any(), any())).thenReturn(List.of());
         when(cartItemRepository.save(any())).thenReturn(cartItem);
 
         var response = cartItemService.addCartItem(cartItemDto);
 
         assertNotNull(response);
+    }
+
+    @Test
+    void addExistingCartItem_Success() throws IOException {
+        var cartItemDto = jsonTestUtils.loadObject("model/request/v1/new_cart_item_request.json", CartItemDto.class);
+        var cartItem = jsonTestUtils.loadObject("model/domain/v1/cart_item.json", CartItem.class);
+
+        when(cartItemRepository.findByCartIdAndProductId(any(), any())).thenReturn(List.of(cartItem));
+        when(cartItemRepository.save(any())).thenReturn(cartItem);
+
+        var response = cartItemService.addCartItem(cartItemDto);
+
+        assertNotNull(response);
+        assertNotNull(response.quantity());
+        assertEquals(7, response.quantity());
     }
 
     @Test

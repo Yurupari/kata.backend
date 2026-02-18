@@ -27,6 +27,7 @@ repositories {
 
 val springdocVersion = "2.8.5"
 val mapstructVersion = "1.6.3"
+val apacheCommonsLangVersion = "3.20.0"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -34,6 +35,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation ("org.mapstruct:mapstruct:${mapstructVersion}")
+	implementation("org.apache.commons:commons-lang3:${apacheCommonsLangVersion}")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")

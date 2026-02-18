@@ -62,7 +62,13 @@ class KataApplicationTests {
 
 	@Test
 	void getProducts_Success() throws Exception {
-		mockMvc.perform(get("/api/kata/v1/product/products"))
+		mockMvc.perform(get("/api/kata/v1/product/products?page=0&size=10&sort=desc"))
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void searchProducts_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/product/products/search?searchQuery=PpL&page=0&size=10&sort=desc"))
 				.andExpect(status().is2xxSuccessful());
 	}
 
@@ -91,6 +97,12 @@ class KataApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void getOffers_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/offer/offers?page=0&size=10&sort=desc"))
 				.andExpect(status().is2xxSuccessful());
 	}
 
@@ -146,6 +158,12 @@ class KataApplicationTests {
 	}
 
 	@Test
+	void getProductOffers_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/product/offer?productId=1&offerId=1"))
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
 	void addProductOffer_Success() throws Exception {
 		var request = jsonTestUtils.loadRequest("model/request/v1/new_product_offer_request.json");
 
@@ -157,13 +175,41 @@ class KataApplicationTests {
 	}
 
 	@Test
+	void addProductOffers_Success() throws Exception {
+		var request = jsonTestUtils.loadRequest("model/request/v1/create_product_offer_request.json");
+
+		mockMvc.perform(post("/api/kata/v1/product/offer/multiple")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(request)
+				)
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
 	void updateProductOffer_Success() throws Exception {
-		var request = jsonTestUtils.loadRequest("model/dto/v1/fixed_amount_product_offer_dto.json");
+		var request = jsonTestUtils.loadRequest("model/dto/v1/update_product_selection_request.json");
 
 		mockMvc.perform(put("/api/kata/v1/product/offer")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request)
 				)
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void updateProductOffers_Success() throws Exception {
+		var request = jsonTestUtils.loadRequest("model/dto/v1/update_product_offer_request.json");
+
+		mockMvc.perform(put("/api/kata/v1/product/offer/multiple")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(request)
+				)
+				.andExpect(status().is2xxSuccessful());
+	}
+
+	@Test
+	void precalculatePrice_Success() throws Exception {
+		mockMvc.perform(get("/api/kata/v1/checkout/precalculate/3"))
 				.andExpect(status().is2xxSuccessful());
 	}
 

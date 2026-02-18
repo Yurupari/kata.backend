@@ -3,6 +3,7 @@ package com.haiilo.kata.backend.service.impl;
 import com.haiilo.kata.backend.exception.CartItemNotFoundException;
 import com.haiilo.kata.backend.exception.ValidationException;
 import com.haiilo.kata.backend.model.dto.CartItemDto;
+import com.haiilo.kata.backend.model.enums.Status;
 import com.haiilo.kata.backend.model.mapper.CartItemMapper;
 import com.haiilo.kata.backend.repository.CartItemRepository;
 import com.haiilo.kata.backend.service.CartItemService;
@@ -22,6 +23,8 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
 
     private final CartItemMapper cartItemMapper;
+
+    private final CartService cartService;
 
     @Override
     public List<CartItemDto> getCartItems(Long cartId) {
@@ -47,9 +50,20 @@ public class CartItemServiceImpl implements CartItemService {
 
         validateCartItem(cartItemDto, false);
 
-        var cartItem = cartItemRepository.save(cartItemMapper.toEntity(cartItemDto));
+        return cartItemRepository.findByCartIdAndProductId(cartItemDto.cartId(), cartItemDto.productId()).stream()
+                .filter(cartItem -> Status.ACTIVE.equals(cartItem.getStatus()))
+                .findAny()
+                .map(cartItem -> {
+                    cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
+                    var updatedCartItem =cartItemRepository.save(cartItem);
 
-        return cartItemMapper.toDto(cartItem);
+                    return cartItemMapper.toDto(updatedCartItem);
+                })
+                .orElseGet(() -> {
+                    var cartItem = cartItemRepository.save(cartItemMapper.toEntity(cartItemDto));
+
+                    return cartItemMapper.toDto(cartItem);
+                });
     }
 
     @Override

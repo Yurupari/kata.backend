@@ -5,7 +5,10 @@ import com.haiilo.kata.backend.service.ReceiptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,17 @@ public class ReceiptControllerV1 {
 
     @Autowired
     private ReceiptService receiptService;
+
+    @Operation(summary = "Get all the receipts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the receipts")
+    })
+    @GetMapping("/receipts")
+    public ResponseEntity<Page<ReceiptDto>> getReceipts(@ParameterObject Pageable pageable) {
+        var receiptDto = receiptService.getReceipts(pageable);
+
+        return ResponseEntity.ok(receiptDto);
+    }
 
     @Operation(summary = "Get receipt by ID")
     @ApiResponses(value = {
